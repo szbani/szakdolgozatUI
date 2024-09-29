@@ -4,27 +4,29 @@ import {WebSocketProvider} from "./websocket/WebSocketContext.tsx";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import OrderTable from "./ui/dashboard/components/OrderTable.tsx";
 import OrderList from "./ui/dashboard/components/OrderList.tsx";
-import ClientsLayout from "./ui/dashboard/strclients/ClientsLayout.tsx";
-import ClientsUI from "./ui/dashboard/strclients/ClientsUI.tsx";
-import ClientUI from "./ui/dashboard/strclients/ClientUI.tsx";
+import ClientsLayout from "./ui/dashboard/clients/ClientsLayout.tsx";
+import ClientsUI from "./ui/dashboard/clients/ClientsUI.tsx";
+import ClientUI from "./ui/dashboard/clients/ClientUI.tsx";
+import ShowCase from "./ui/showcase/ShowCase.tsx";
 
 function App() {
 
     return (
-        <WebSocketProvider>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Dashboard/>}>
-                        <Route index element={<><OrderTable/><OrderList/></>}/>
-                        <Route path="streamingclients" element={<ClientsLayout/>}>
-                            <Route index element={<ClientsUI/>}/>
-                            <Route path={"client"} element={<ClientUI/>}/>
-                        </Route>
+
+        <Router>
+            <Routes>
+                <Route path="/" element={<WebSocketProvider><Dashboard/></WebSocketProvider>}>
+                    <Route index element={<><OrderTable/><OrderList/></>}/>
+                    <Route path="streamingclients" element={<ClientsLayout/>}>
+                        <Route index element={<ClientsUI/>}/>
+                        <Route path={"client"} element={<ClientUI/>}/>
                     </Route>
-                </Routes>
-            </Router>
-        </WebSocketProvider>
-)
+                </Route>
+                <Route path="showcase" element={<ShowCase/>}></Route>
+            </Routes>
+        </Router>
+
+    )
 }
 
 export default App

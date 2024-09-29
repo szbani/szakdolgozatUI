@@ -1,5 +1,5 @@
 //@ts-ignore
-import useWebSocket, { ReadyState} from "react-use-websocket";
+import useWebSocket from "react-use-websocket";
 import {useEffect, useState} from "react";
 
 export const Websocket = () => {
@@ -23,6 +23,7 @@ export const Websocket = () => {
     useEffect(() => {
         if (lastMessage) {
             let parsedMessage;
+            console.log('Received message:', lastMessage.data);
             try {
                 parsedMessage = JSON.parse(lastMessage.data);
             }catch (e) {
