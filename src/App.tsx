@@ -17,9 +17,9 @@ function App() {
             <Routes>
                 <Route path="/" element={<WebSocketProvider><Dashboard/></WebSocketProvider>}>
                     <Route index element={<><OrderTable/><OrderList/></>}/>
-                    <Route path="streamingclients" element={<ClientsLayout/>}>
+                    <Route path="displays" element={<ClientsLayout/>}>
                         <Route index element={<ClientsUI/>}/>
-                        <Route path={"client"} element={<ClientUI/>}/>
+                        <Route path={"client/:clientId"} element={<ClientUI/>}/>
                     </Route>
                 </Route>
                 <Route path="showcase" element={<ShowCase/>}></Route>

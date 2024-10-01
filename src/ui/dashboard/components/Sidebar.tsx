@@ -158,10 +158,10 @@ export default function Sidebar() {
                     </ListItem>
 
                     <ListItem>
-                        <ListItemButton component={NavLink} to={"streamingclients"}>
+                        <ListItemButton component={NavLink} to={"displays"}>
                             <ComputerRounded/>
                             <ListItemContent>
-                                <Typography level="title-sm">Streaming Clients</Typography>
+                                <Typography level="title-sm">Displays</Typography>
                             </ListItemContent>
                         </ListItemButton>
                     </ListItem>

@@ -3,13 +3,11 @@ import Card from "@mui/joy/Card";
 import {CardActions, CardContent, Grid} from "@mui/joy";
 import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
+import {NavLink} from "react-router-dom";
 
 const ClientsUI = () => {
-
     const {clients} = useWebSocketContext();
 
-    // const clientsStateState = useState(clients);
-    // console.log(clients);
 
     return (
         <Grid
@@ -18,13 +16,14 @@ const ClientsUI = () => {
             columns={{xs: 4, sm: 8, md: 12}}
             sx={{flexGrow: 1}}
         >
-            {clients ? clientCards(clients) : <h1>No clients connected</h1>}
+            {Array.isArray(clients) && clients.length === 0 ?
+                <Typography level="title-lg" fontSize={25}>No Clients Connected</Typography> : clientCards(clients)}
         </Grid>
     )
 }
 
-function clientCards(clients: string[]) {
-    const listClients = clients.map((client,index) =>
+const clientCards = (clients: string[]) => {
+    const listClients = clients.map((client, index) =>
         <Grid key={index}>
             <Card
                 color="neutral"
@@ -34,7 +33,7 @@ function clientCards(clients: string[]) {
             >
                 <Typography level="title-lg">{client}</Typography>
                 <CardContent>Display currently not streaming any content.</CardContent>
-                <CardActions><Button variant={"outlined"}>View</Button><Button>Disconnect</Button></CardActions>
+                <CardActions><NavLink to={`client/`+client}><Button>View</Button></NavLink><Button>Disconnect</Button></CardActions>
             </Card>
         </Grid>
     );
