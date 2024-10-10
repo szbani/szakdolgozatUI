@@ -88,7 +88,7 @@ export const Websocket = () => {
         sendMessage('ping');
     }
 
-    const sendFiles = (files: FileList,targetUser: string) => {
+    const sendFiles = (files: FileList, targetUser: string) => {
         let jsonToSend = JSON.stringify({
             type: 'startFileStream',
             targetUser: targetUser,
@@ -113,23 +113,23 @@ export const Websocket = () => {
                 reader.onload = async (event: ProgressEvent<FileReader>) => {
                     if (event.target?.result) {
                         const fileChunkBuffer = event.target.result as ArrayBuffer;
-                        let bufferToSend;
-                        let combinedView;
+                        // let bufferToSend;
+                        // let combinedView;
 
-                        if(firstChunk){
-                            bufferToSend = new ArrayBuffer(maxFileNameSize + fileChunkBuffer.byteLength);
-                            combinedView = new Uint8Array(bufferToSend);
+                        // if(firstChunk){
+                        const bufferToSend = new ArrayBuffer(maxFileNameSize + fileChunkBuffer.byteLength);
+                        const combinedView = new Uint8Array(bufferToSend);
 
-                            // Fill first 100 bytes with the file name (padded if needed)
-                            combinedView.set(fileNameBuffer.slice(0, maxFileNameSize)); // File name
-                            // Fill the rest with the file data
-                            combinedView.set(new Uint8Array(fileChunkBuffer), maxFileNameSize); // File data
-                        }
-                        else    {
-                            bufferToSend = new ArrayBuffer(fileChunkBuffer.byteLength);
-                            combinedView = new Uint8Array(bufferToSend);
-                            combinedView.set(new Uint8Array(fileChunkBuffer));
-                        }
+                        // Fill first 100 bytes with the file name (padded if needed)
+                        combinedView.set(fileNameBuffer.slice(0, maxFileNameSize)); // File name
+                        // Fill the rest with the file data
+                        combinedView.set(new Uint8Array(fileChunkBuffer), maxFileNameSize); // File data
+                        // }
+                        // else    {
+                        //     bufferToSend = new ArrayBuffer(fileChunkBuffer.byteLength);
+                        //     combinedView = new Uint8Array(bufferToSend);
+                        //     combinedView.set(new Uint8Array(fileChunkBuffer));
+                        // }
 
                         // Send buffer
                         console.log('Sending chunk:', file.name, offset, fileChunkBuffer.byteLength);
@@ -161,7 +161,7 @@ export const Websocket = () => {
                 readChunk();
             }
         }
-    }
+    };
 
     return {
         readyState,
