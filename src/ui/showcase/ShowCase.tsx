@@ -1,4 +1,3 @@
-import {useSearchParams} from 'react-router-dom';
 import {ClientWebSocket} from "../../websocket/ClientWebSocketBase.ts";
 import Box from "@mui/joy/Box";
 import Carousel from "react-material-ui-carousel";
@@ -27,7 +26,7 @@ export const SlideShow = () => {
     ]
 
     return (
-        <Carousel indicators={false} interval={5000}>
+        <Carousel indicators={false} interval={5000} >
             {
                 items.map((item, i) => <Item key={i} item={item}/>)
             }
@@ -37,7 +36,7 @@ export const SlideShow = () => {
 
 const Item = (props) => {
     return (
-        <Paper sx={{height:"100vh", backgroundColor: props.item.backgroundColor}} >
+        <Paper sx={{height:"100vh", borderRadius: '0px', backgroundColor: props.item.backgroundColor}} >
             {/*<h2 >{props.item.name}</h2>*/}
             {/*<p>{props.item.description}</p>*/}
         </Paper>
@@ -54,14 +53,7 @@ export const VideoPlayer = () => {
 }
 
 const ShowCase = () => {
-    const [searchParams] = useSearchParams();
-    let socket = null;
-
-    if (searchParams.get('username') !== null) {
-        socket = ClientWebSocket(searchParams.get('username'));
-    } else {
-        console.log('Cant Connect To WS');
-    }
+    const socket = ClientWebSocket();
 
     return (
         <Box sx={{cursor: "none", width: '100%', height: '100%'}}>

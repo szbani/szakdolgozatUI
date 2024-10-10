@@ -1,0 +1,5 @@
+{
+  "websocketPort": 5065,
+  "httpsPort": 8085,
+  "fileStoragePath": "C:\\szakdolgozat\\fileStorage"
+}

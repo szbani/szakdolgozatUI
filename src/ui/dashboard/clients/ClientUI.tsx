@@ -2,13 +2,14 @@ import {useParams} from "react-router-dom";
 import Button from "@mui/joy/Button";
 import {useState} from "react";
 import Box from "@mui/joy/Box";
-import {ImageList, ImageListItem, useMediaQuery} from "@mui/material";
-import {Image} from "@mui/icons-material";
 import {Grid} from "@mui/joy";
+import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
 
 const FileUpload = () => {
     const [file, setFile] = useState(null);
     const [fileList, setFileList] = useState([]);
+    const {sendFiles} = useWebSocketContext();
+    const {clientId} = useParams();
 
     const handleFileChange = (e) => {
         setFile(e.target.files);
@@ -20,6 +21,11 @@ const FileUpload = () => {
         setFileList([]);
     }
 
+    const handleUpload = () => {
+        sendFiles(file,clientId);
+    }
+
+
     return (
         <Box>
             <RenderSelectedFiles fileList={fileList}/>
@@ -27,8 +33,9 @@ const FileUpload = () => {
                 <Button variant={"outlined"}
                         component={'label'}>{file == null ? 'Select File To Upload' : 'Selected Files To Upload: (' + fileList.length + ")"}
                     <input type={'file'} onChange={handleFileChange} hidden multiple/>
-                </Button>
-                <Button color={"danger"} onClick={handleReset}>Reset</Button>
+                </Button>{file != null ?
+                <div><Button color={"success"} onClick={handleUpload}>Upload</Button>
+                    <Button color={"danger"} onClick={handleReset}>Reset</Button></div> : null}
             </Box>
         </Box>
     )
@@ -47,7 +54,10 @@ const RenderSelectedFiles = (props) => {
         >
             {props.fileList.map((file, index) =>
                 <Grid key={index}>
-                    {file.type == 'video/mp4' ? <video src={URL.createObjectURL(file)} style={{width: '200px', height: '200px'}} controls></video> :  <img src={URL.createObjectURL(file)} alt={file.name} style={{width: '200px', height: '200px'}}/>}
+                    {file.type == 'video/mp4' ?
+                        <video src={URL.createObjectURL(file)} style={{width: '200px', height: '200px'}}
+                               controls></video> : <img src={URL.createObjectURL(file)} alt={file.name}
+                                                        style={{width: '200px', height: '200px'}}/>}
                 </Grid>
             )}
         </Grid>

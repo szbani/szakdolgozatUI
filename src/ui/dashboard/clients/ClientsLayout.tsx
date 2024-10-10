@@ -2,7 +2,7 @@ import {NavLink, Outlet, useOutletContext, useParams, useSearchParams} from "rea
 import Typography from "@mui/joy/Typography";
 import Button from "@mui/joy/Button";
 import Box from "@mui/joy/Box";
-import {ArrowBackRounded, PersonAdd} from "@mui/icons-material";
+import {ArrowBackRounded} from "@mui/icons-material";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Link from "@mui/joy/Link";
@@ -75,7 +75,6 @@ const clientsLayout = () => {
                     </Typography>
                     <Button
                         color="primary"
-                        startDecorator={<PersonAdd/>}
                         size="sm"
                     >
                         Invite Display
@@ -96,7 +95,6 @@ const clientsLayout = () => {
                         <NavLink to={'/displays'}>
                             <IconButton
                                 color="primary"
-                                startDecorator={<PersonAdd/>}
                                 size="md"
                             >
                                 <ArrowBackRounded/>

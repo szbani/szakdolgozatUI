@@ -9,8 +9,7 @@ import ClientsUI from "./ui/dashboard/clients/ClientsUI.tsx";
 import ClientUI from "./ui/dashboard/clients/ClientUI.tsx";
 import ShowCase from "./ui/showcase/ShowCase.tsx";
 
-function App() {
-
+const App = () => {
     return (
 
         <Router>
