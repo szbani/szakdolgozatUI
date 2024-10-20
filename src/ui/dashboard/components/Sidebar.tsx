@@ -20,7 +20,6 @@ import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import BrightnessAutoRoundedIcon from '@mui/icons-material/BrightnessAutoRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
@@ -66,7 +65,14 @@ function Toggler({
 }
 
 export default function Sidebar() {
-    const {getConnectedUsers} = useWebSocketContext();
+    //@ts-ignore
+    const {clients} = useWebSocketContext();
+    // @ts-ignore
+    const [currentTab, setCurrentTab] = React.useState('home');
+
+    // React.useEffect(() => {
+    //     getConnectedUsers();
+    // }, []);
 
     return (
         <Sheet
@@ -121,10 +127,7 @@ export default function Sidebar() {
                 onClick={() => closeSidebar()}
             />
             <Box sx={{display: 'flex', gap: 1, alignItems: 'center'}}>
-                <IconButton variant="soft" color="primary" size="sm">
-                    <BrightnessAutoRoundedIcon/>
-                </IconButton>
-                <Typography level="title-lg">Acme Co.</Typography>
+                <Typography level="title-lg">Display Manager.</Typography>
                 <ColorSchemeToggle sx={{ml: 'auto'}}/>
             </Box>
             <Input size="sm" startDecorator={<SearchRoundedIcon/>} placeholder="Search"/>
@@ -149,7 +152,7 @@ export default function Sidebar() {
                     }}
                 >
                     <ListItem>
-                        <ListItemButton component={NavLink} to={"/"}>
+                        <ListItemButton component={NavLink} to={"/"} >
                             <HomeRoundedIcon/>
                             <ListItemContent>
                                 <Typography level="title-sm">Home</Typography>
@@ -158,7 +161,7 @@ export default function Sidebar() {
                     </ListItem>
 
                     <ListItem>
-                        <ListItemButton component={NavLink} to={"displays"}>
+                        <ListItemButton id={'Onlinedisplays'} component={NavLink} to={"displays"}>
                             <ComputerRounded/>
                             <ListItemContent>
                                 <Typography level="title-sm">Displays</Typography>
@@ -259,7 +262,7 @@ export default function Sidebar() {
                         </IconButton>
                     </Stack>
                     <Typography level="body-xs">
-                        There are X devices streaming content from Y devices.
+                        There are {clients.length} device online ready to display content from Y devices.
                     </Typography>
                     <LinearProgress variant="outlined" value={80} determinate sx={{my: 1}}/>
                 </Card>

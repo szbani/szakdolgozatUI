@@ -1,6 +1,5 @@
 interface AppConfig {
-    websocketPort: number;
-    HttpsPort: number;
+    websocket: string;
 }
 
 let config: AppConfig | null = null;

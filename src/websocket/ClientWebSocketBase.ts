@@ -1,3 +1,4 @@
+//@ts-nocheck
 import useWebSocket from "react-use-websocket";
 import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
@@ -7,23 +8,22 @@ export const ClientWebSocket = () => {
     const [socketUrl, setSocketUrl] = useState<string>();
     const [messageHistory, setMessageHistory] = useState([]);
     const [userMessages, setUserMessages] = useState<{ message: string }[]>([]);
-    const [fileTransfer, setFileTransfer] = useState(false)
-
 
     const [searchParams] = useSearchParams();
     const [username, setUsername] = useState('');
 
+    const [fileNames, setFileNames] = useState<string[]>();
     useEffect(() => {
         const openWebsocket = async () => {
             try {
                 const config = await loadConfig();
                 const username = searchParams.get('username') ? searchParams.get('username') : null;
                 try {
-                    console.log('config:', config?.websocketPort);
-                    if (username !== null && config?.websocketPort != null) {
+                    console.log('config:', config?.websocket);
+                    if (username !== null && config?.websocket != null) {
                         setUsername(username);
                         console.log('Connecting to WS with username:', username);
-                        setSocketUrl(`https://localhost:${config?.websocketPort}?user=${username}`);
+                        setSocketUrl(config?.websocket+"?user="+username);
                         // console.log('Socket URL:', socketUrl);
                     } else {
                         console.log('Cant Connect To WS');
@@ -43,16 +43,11 @@ export const ClientWebSocket = () => {
         sendMessage,
         lastMessage,
         readyState,
-    } = useWebSocket(socketUrl, {reconnectInterval: 3000, shouldReconnect: (closeEvent) => true});
+    } = useWebSocket(socketUrl, { reconnectInterval: 3000, shouldReconnect: (closeEvent) => true});
 
     useEffect(() => {
         if (lastMessage) {
             let parsedMessage;
-            if (fileTransfer) {
-                console.log('File Transfer');
-                // FileReader.readAsArrayBuffer(lastMessage.data);
-                return
-            }
             console.log('Received message:', lastMessage.data);
             try {
                 parsedMessage = JSON.parse(lastMessage.data);
@@ -62,16 +57,18 @@ export const ClientWebSocket = () => {
             }
 
             switch (parsedMessage.type) {
+                case 'filesForUser':
+                    setFileNames(parsedMessage.content);
+                    console.log('Received files:', parsedMessage.content);
+                    break;
+                case "updateRequest":
+                    console.log('Received update request');
+                    getFileForUser();
+                    break;
                 case 'messageFromUser':
                     setUserMessages((prev) => prev.concat({
                         message: parsedMessage.message,
                     }));
-                    break;
-                case 'startFileStream':
-                    setFileTransfer(true);
-                    break;
-                case 'endFileStream':
-                    setFileTransfer(false);
                     break;
                 case 'pong':
                     console.log('Received pong');
@@ -83,12 +80,19 @@ export const ClientWebSocket = () => {
         }
     }, [lastMessage]);
 
+    const getFileForUser = () => {
+        sendMessage(JSON.stringify({type: 'getFilesForUser', targetUser: username}));
+    }
+
 
     return {
         sendMessage,
         lastMessage,
         readyState,
         messageHistory,
-        userMessages
+        userMessages,
+        username,
+        getFileForUser,
+        fileNames
     }
 }

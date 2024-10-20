@@ -1,19 +1,17 @@
-//@ts-ignore
+//@ts-nocheck
 import useWebSocket from "react-use-websocket";
 import {useEffect, useState} from "react";
 import {loadConfig} from "../config.ts";
 
 export const Websocket = () => {
-    //@ts-ignore
     const [socketUrl, setSocketUrl] = useState<string>();
-    //@ts-ignore
     const [messageHistory, setMessageHistory] = useState([]);
-    //@ts-ignore
     const [clients, setClients] = useState<string[]>([]);
-    //@ts-ignore
     const [admins, setAdmins] = useState<string[]>([]);
-    //@ts-ignore
     const [userMessages, setUserMessages] = useState<{ message: string }[]>([]);
+
+    const [uploading, setUploading] = useState<boolean>(false);
+
 
     useEffect(() => {
         const openWebsocket = async () => {
@@ -22,7 +20,7 @@ export const Websocket = () => {
                 try {
                     if (config !== null) {
                         console.log('Connecting to WS');
-                        setSocketUrl(`Https://localhost:${config?.websocketPort}`);
+                        setSocketUrl(config?.websocket);
                     }
                 } catch (error) {
                     console.error('Error connecting to WS:', error);
@@ -33,10 +31,12 @@ export const Websocket = () => {
         }
         openWebsocket();
     }, []);
+
     const {
         sendMessage,
         lastMessage,
         readyState
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } = useWebSocket(socketUrl, {reconnectInterval: 3000, shouldReconnect: (closeEvent) => true});
 
     useEffect(() => {
@@ -64,6 +64,9 @@ export const Websocket = () => {
                         message: parsedMessage.message,
                     }));
                     break;
+                case'fileArrived':
+                    setUploading(true);
+                    break;
                 case 'pong':
                     console.log('Received pong');
                     break;
@@ -89,78 +92,88 @@ export const Websocket = () => {
     }
 
     const sendFiles = (files: FileList, targetUser: string) => {
-        let jsonToSend = JSON.stringify({
-            type: 'startFileStream',
-            targetUser: targetUser,
-        });
-        sendMessage(jsonToSend);
-        for (let i = 0; i < files.length; i++) {
-            const file = files.item(i);
-            if (file) {
-                const chunkSize = 1024 * 256; // 256KB per chunk
-                const fileNameBuffer = new TextEncoder().encode(file.name); // Encode file name to bytes
-                const maxFileNameSize = 100;
 
-                const reader = new FileReader();
-                let offset = 0;
-                let firstChunk = true;
-
-                const readChunk = () => {
-                    const chunk = file.slice(offset, offset + chunkSize); // Slice the file
-                    reader.readAsArrayBuffer(chunk); // Read the chunk as ArrayBuffer (binary)
-                };
-
-                reader.onload = async (event: ProgressEvent<FileReader>) => {
-                    if (event.target?.result) {
-                        const fileChunkBuffer = event.target.result as ArrayBuffer;
-                        // let bufferToSend;
-                        // let combinedView;
-
-                        // if(firstChunk){
-                        const bufferToSend = new ArrayBuffer(maxFileNameSize + fileChunkBuffer.byteLength);
-                        const combinedView = new Uint8Array(bufferToSend);
-
-                        // Fill first 100 bytes with the file name (padded if needed)
-                        combinedView.set(fileNameBuffer.slice(0, maxFileNameSize)); // File name
-                        // Fill the rest with the file data
-                        combinedView.set(new Uint8Array(fileChunkBuffer), maxFileNameSize); // File data
-                        // }
-                        // else    {
-                        //     bufferToSend = new ArrayBuffer(fileChunkBuffer.byteLength);
-                        //     combinedView = new Uint8Array(bufferToSend);
-                        //     combinedView.set(new Uint8Array(fileChunkBuffer));
-                        // }
-
-                        // Send buffer
-                        console.log('Sending chunk:', file.name, offset, fileChunkBuffer.byteLength);
-                        console.log('Buffer:', bufferToSend);
-                        sendMessage(bufferToSend);
-
-                        offset += fileChunkBuffer.byteLength; // Update offset
-                        if (offset < file.size) {
-                            firstChunk = false;
-                            readChunk(); // Continue reading the next chunk
-                        } else {
-                            // End of file
-                            firstChunk = true;
-                            const endStreamMessage = JSON.stringify({
-                                type: "endFileStream",
-                                fileName: file.name
-                            });
-                            sendMessage(endStreamMessage);
-                            console.log('File sent:', file.name); // Log success
-                        }
-                    }
-                };
-
-                reader.onerror = (event) => {
-                    console.error('Error reading file:', event);
-                };
-
-                // Start reading the first chunk
-                readChunk();
-            }
-        }
+        // useEffect(() => {
+        //
+        //     setUploading(true);
+        //     //start uploading
+        //     if (uploading) {
+        //         console.log('Uploading');
+        //     }
+        //     // let jsonToSend = JSON.stringify({
+        //     //     type: 'startFileStream',
+        //     //     targetUser: targetUser,
+        //     //     deleteFiles: true
+        //     // });
+        //     // sendMessage(jsonToSend);
+        //     //
+        //     // files[0].arrayBuffer().then((buffer) => {
+        //     //     console.log('Buffer:', buffer);
+        //     //     sendMessage(buffer);
+        //     // }
+        //
+        //
+        //
+        // }, [!uploading]);
+        // for (let i = 0; i < files.length; i++) {
+        //     const file = files.item(i);
+        //     if (file) {
+        //         const chunkSize = 1024 * 256; // 256KB per chunk
+        //         const fileNameBuffer = new TextEncoder().encode(file.name); // Encode file name to bytes
+        //         const maxFileNameSize = 100;
+        //
+        //         const reader = new FileReader();
+        //         let offset = 0;
+        //
+        //         const readChunk = () => {
+        //             const chunk = file.slice(offset, offset + chunkSize); // Slice the file
+        //             reader.readAsArrayBuffer(chunk); // Read the chunk as ArrayBuffer (binary)
+        //         };
+        //
+        //         reader.onload = async (event: ProgressEvent<FileReader>) => {
+        //             if (event.target?.result) {
+        //                 const fileChunkBuffer = event.target.result as ArrayBuffer;
+        //                 // let bufferToSend;
+        //                 // let combinedView;
+        //
+        //                 // if(firstChunk){
+        //                 const bufferToSend = new ArrayBuffer(maxFileNameSize + fileChunkBuffer.byteLength);
+        //                 const combinedView = new Uint8Array(bufferToSend);
+        //
+        //                 // Fill first 100 bytes with the file name (padded if needed)
+        //                 combinedView.set(fileNameBuffer.slice(0, maxFileNameSize)); // File name
+        //                 // Fill the rest with the file data
+        //                 combinedView.set(new Uint8Array(fileChunkBuffer), maxFileNameSize); // File data
+        //
+        //                 // Send buffer
+        //                 // console.log('Sending chunk:', file.name, offset, fileChunkBuffer.byteLength);
+        //                 console.log('Buffer:', bufferToSend);
+        //                 sendMessage(bufferToSend);
+        //
+        //                 offset += fileChunkBuffer.byteLength; // Update offset
+        //                 if (offset < file.size) {
+        //                     readChunk(); // Continue reading the next chunk
+        //                 } else {
+        //                     // End of file
+        //                     const endStreamMessage = JSON.stringify({
+        //                         type: "endFileStream",
+        //                         fileName: file.name
+        //                     });
+        //                     sendMessage(endStreamMessage);
+        //                     // sendMessage(JSON.stringify({type: 'sendUpdateRequestToUser', targetUser: targetUser}));
+        //                     console.log('File sent:', file.name); // Log success
+        //                 }
+        //             }
+        //         };
+        //
+        //         reader.onerror = (event) => {
+        //             console.error('Error reading file:', event);
+        //         };
+        //
+        //         // Start reading the first chunk
+        //         readChunk();
+        //     }
+        // }
     };
 
     return {
@@ -170,6 +183,8 @@ export const Websocket = () => {
         sendToUser,
         sendPing,
         clients,
-        sendFiles
+        sendMessage,
+        uploading,
+        setUploading
     }
 }

@@ -6,8 +6,8 @@ import Typography from "@mui/joy/Typography";
 import {NavLink} from "react-router-dom";
 
 const ClientsUI = () => {
+    // @ts-ignore
     const {clients} = useWebSocketContext();
-
 
     return (
         <Grid
