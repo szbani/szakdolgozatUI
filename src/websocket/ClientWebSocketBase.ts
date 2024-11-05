@@ -23,7 +23,7 @@ export const ClientWebSocket = () => {
                     if (username !== null && config?.websocket != null) {
                         setUsername(username);
                         console.log('Connecting to WS with username:', username);
-                        setSocketUrl(config?.websocket+"?user="+username);
+                        setSocketUrl(config?.websocket + "/showcase?user=" + username);
                         // console.log('Socket URL:', socketUrl);
                     } else {
                         console.log('Cant Connect To WS');
@@ -43,7 +43,9 @@ export const ClientWebSocket = () => {
         sendMessage,
         lastMessage,
         readyState,
-    } = useWebSocket(socketUrl, { reconnectInterval: 3000, shouldReconnect: (closeEvent) => true});
+    } = useWebSocket(socketUrl,
+        {reconnectInterval: 3000,
+            shouldReconnect: (closeEvent) => true});
 
     useEffect(() => {
         if (lastMessage) {

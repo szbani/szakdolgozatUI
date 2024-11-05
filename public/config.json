@@ -1,4 +1,4 @@
 {
-  "websocket": "https://localhost:5065",
+  "websocket": "http://localhost:5065",
   "httpsPort": 8085
 }

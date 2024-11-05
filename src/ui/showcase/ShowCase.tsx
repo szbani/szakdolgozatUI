@@ -1,7 +1,7 @@
 import {ClientWebSocket} from "../../websocket/ClientWebSocketBase.ts";
 import Box from "@mui/joy/Box";
 import Carousel from "react-material-ui-carousel";
-import {Key, useEffect, useState} from "react";
+import {Key, useEffect, useRef, useState} from "react";
 import {loadShowCaseConfig} from "./ShowCaseConfig.ts";
 
 // @ts-ignore
@@ -17,7 +17,7 @@ const SlideShow = ({userName, fileNames}) => {
         }
     }, []);
     // console.log('SlideShow:', userName);
-    // console.log('SlideShow:', fileNames);
+    console.log('SlideShow:', fileNames);
 
     return (
         <Carousel autoPlay={true} animation={"slide"} stopAutoPlayOnHover={false} indicators={false}
@@ -37,8 +37,28 @@ const SlideShow = ({userName, fileNames}) => {
 
 // @ts-ignore
 const MediaPlayer = ({username, fileName}) => {
+    const [windowSize, setWindowSize] = useState({width: window.innerWidth, height: window.innerHeight});
+    const videoRef = useRef<HTMLVideoElement>(null);
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowSize({width: window.innerWidth, height: window.innerHeight});
+        }
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.load();
+        }
+        console.log('MediaPlayer:', fileName);
+    }, [fileName]);
+
+    // console.log('MediaPlayer:', fileName);
     return (
-        <video controls autoPlay loop style={{width: '100%', height: '100%'}}>
+        <video ref={videoRef} muted controls autoPlay loop style={{width: windowSize.width, height: windowSize.height }}>
             <source src={`/${username}/${fileName}`} type="video/mp4"/>
         </video>
     )
@@ -47,6 +67,8 @@ const MediaPlayer = ({username, fileName}) => {
 const ShowCase = () => {
     const socket = ClientWebSocket();
     const [mediaType, setMediaType] = useState<string>('');
+    // @ts-ignore
+    const [content, setContent] = useState(null);
 
 
 
@@ -86,7 +108,7 @@ const ShowCase = () => {
             {socket.fileNames && socket.fileNames.length > 0 && socket.username !== '' && mediaType === "image" ?
                 <SlideShow userName={socket.username} fileNames={socket.fileNames}/> : null}
             {socket.fileNames && socket.fileNames.length > 0 && socket.username !== '' && mediaType === "video" ?
-                <MediaPlayer username={socket.username} fileName={socket.fileNames}></MediaPlayer> : null}
+                <MediaPlayer username={socket.username} fileName={socket.fileNames}/> : null}
         </Box>
     )
 }

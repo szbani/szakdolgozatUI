@@ -27,6 +27,7 @@ import {closeSidebar} from '../utils.tsx';
 import {ComputerRounded, FolderRounded} from "@mui/icons-material";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
 import {NavLink} from "react-router-dom";
+import {useEffect} from "react";
 
 // import {Websocket} from "../../../websocket/WebSocketBase.ts";
 
@@ -66,13 +67,13 @@ function Toggler({
 
 export default function Sidebar() {
     //@ts-ignore
-    const {clients} = useWebSocketContext();
+    const {registeredDisplays} = useWebSocketContext();
     // @ts-ignore
-    const [currentTab, setCurrentTab] = React.useState('home');
+    const [currentTab, setCurrentTab] = React.useState('');
 
-    // React.useEffect(() => {
-    //     getConnectedUsers();
-    // }, []);
+    useEffect(() => {
+        setCurrentTab(window.location.pathname.split('/')[1]);
+    }, []);
 
     return (
         <Sheet
@@ -152,28 +153,28 @@ export default function Sidebar() {
                     }}
                 >
                     <ListItem>
-                        <ListItemButton component={NavLink} to={"/"} >
+                        <ListItemButton component={NavLink} to={"/"} selected={currentTab == "" ? true : false}>
                             <HomeRoundedIcon/>
                             <ListItemContent>
-                                <Typography level="title-sm">Home</Typography>
+                                <Typography onClick={() => setCurrentTab('')} level="title-sm">Home</Typography>
                             </ListItemContent>
                         </ListItemButton>
                     </ListItem>
 
                     <ListItem>
-                        <ListItemButton id={'Onlinedisplays'} component={NavLink} to={"displays"}>
+                        <ListItemButton id={'Onlinedisplays'} component={NavLink} to={"displays"} selected={currentTab == "displays" ? true : false}>
                             <ComputerRounded/>
                             <ListItemContent>
-                                <Typography level="title-sm">Displays</Typography>
+                                <Typography onClick={() => setCurrentTab('displays')}  level="title-sm">Displays</Typography>
                             </ListItemContent>
                         </ListItemButton>
                     </ListItem>
 
                     <ListItem>
-                        <ListItemButton selected>
+                        <ListItemButton selected={currentTab == "Files" ? true : false}>
                             <FolderRounded/>
                             <ListItemContent>
-                                <Typography level="title-sm">Files</Typography>
+                                <Typography onClick={() => setCurrentTab('files')} level="title-sm">Files</Typography>
                             </ListItemContent>
                         </ListItemButton>
                     </ListItem>
@@ -262,7 +263,7 @@ export default function Sidebar() {
                         </IconButton>
                     </Stack>
                     <Typography level="body-xs">
-                        There are {clients.length} device online ready to display content from Y devices.
+                        There are {registeredDisplays.length} device online ready to display content from Y devices.
                     </Typography>
                     <LinearProgress variant="outlined" value={80} determinate sx={{my: 1}}/>
                 </Card>

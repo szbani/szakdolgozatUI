@@ -1,11 +1,15 @@
 //@ts-nocheck
 import {useParams} from "react-router-dom";
 import Button from "@mui/joy/Button";
-import {Key, useEffect, useState} from "react";
+import {Key, useCallback, useEffect, useState} from "react";
 import Box from "@mui/joy/Box";
-import {Grid} from "@mui/joy";
+import {Grid, Tab, TabList, TabPanel, Tabs} from "@mui/joy";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
-import {FilePond, File, registerPlugin} from "filepond";
+import {File} from "filepond";
+import {Image, Videocam} from "@mui/icons-material";
+import Typography from "@mui/joy/Typography";
+import Dropzone from "react-dropzone";
+import {FileDropZone} from "./FileDropZone.tsx";
 
 const FileUpload = () => {
     const [fileList, setFileList] = useState([]);
@@ -14,9 +18,6 @@ const FileUpload = () => {
     const {sendMessage, uploading, setUploading} = useWebSocketContext();
     const {clientId} = useParams();
     const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
-
-
-
 
 
     const handleImageChange = (e: any) => {
@@ -103,25 +104,6 @@ const FileUpload = () => {
         setUploading(false);
     }, [uploading]);
 
-    const WakeUpDisplay = () => {
-        const jsonToSend = JSON.stringify({
-            type: 'StartDisplay',
-            macAddress: "18:C0:4D:5E:B2:9F",
-            address: "192.168.0.50"
-        });
-        sendMessage(jsonToSend);
-    }
-    const OpenEdge = () => {
-        const jsonToSend = JSON.stringify({
-            type: 'OpenEdge',
-            address: "192.168.0.50",
-            url: "http://localhost:8080",
-        });
-        sendMessage(jsonToSend);
-    }
-
-
-
     return (
         <Box>
             <RenderSelectedFiles fileList={fileList}/>
@@ -136,7 +118,6 @@ const FileUpload = () => {
                 </Button>
                 {fileList.length > 0 ?
                     <div><Button color={"success"} onClick={handleUpload}>Upload</Button>
-                        <Button color={"success"} onClick={OpenEdge}>Wake</Button>
                         <Button color={"danger"} onClick={handleReset}>Reset</Button></div> : null}
             </Box>
         </Box>
@@ -168,16 +149,58 @@ const RenderSelectedFiles = (props: { fileList: File[]; }) => {
     )
 }
 
+//TODO: Implement this
+const CurrentlyPlaying = () => {
+    return (
+        <Box>
+            <h1>Currently Playing</h1>
+            {/*<video src={''} controls></video>*/}
+        </Box>
+    )
+}
+
+// const FileDropZone = () => {
+//     return(
+//         <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+//             {({getRootProps, getInputProps}) => (
+//                 <section>
+//                     <div {...getRootProps()}>
+//                         <input {...getInputProps()} />
+//                         <p>Drag 'n' drop some files here, or click to select files</p>
+//                     </div>
+//                 </section>
+//             )}
+//         </Dropzone>
+//     )
+// }
+
+const UploadZone = () => {
+    return (
+        <Box>
+            <FileUpload/>
+        </Box>
+    )
+}
+
 
 const ClientUI = () => {
-    const params = useParams();
-    const client = params.clientId;
-
     return (
         <div>
-            <h1>{client}</h1>
-            {/*<Button variant={'outlined'} component={'label'}>Select Video<input type={'file'} accept='video/mp4' hidden/></Button>*/}
-            <FileUpload/>
+            <Tabs orientation="horizontal" defaultValue={0}>
+                <TabList>
+                    <Tab
+                        variant="soft"
+                        color="primary"><Image/>Images</Tab>
+                    <Tab
+                    variant="soft"
+                    color="primary"><Videocam />Video</Tab><Tab
+                    variant="soft"
+                    color="primary"><Videocam />TestImage</Tab>
+                </TabList>
+                <TabPanel value={0}><UploadZone/>adsgdfshgdfshfh</TabPanel>
+                <TabPanel value={1}><FileDropZone acceptedFileType={'Video'}/></TabPanel>
+                <TabPanel value={2}><FileDropZone/></TabPanel>
+            </Tabs>
         </div>
     )
 }

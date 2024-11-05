@@ -8,12 +8,15 @@ import ClientsLayout from "./ui/dashboard/clients/ClientsLayout.tsx";
 import ClientsUI from "./ui/dashboard/clients/ClientsUI.tsx";
 import ClientUI from "./ui/dashboard/clients/ClientUI.tsx";
 import ShowCase from "./ui/showcase/ShowCase.tsx";
+import SignInUI from "./ui/Auth/SignIn.tsx";
 
 const App = () => {
+
     return (
 
         <Router>
             <Routes>
+                <Route path="signin" element={<SignInUI/>}></Route>
                 <Route path="/" element={<WebSocketProvider><Dashboard/></WebSocketProvider>}>
                     <Route index element={<><OrderTable/><OrderList/></>}/>
                     <Route path="displays" element={<ClientsLayout/>}>

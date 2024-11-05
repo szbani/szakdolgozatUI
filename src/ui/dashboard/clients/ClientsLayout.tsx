@@ -1,17 +1,15 @@
 //@ts-nocheck
 import {NavLink, Outlet, useParams} from "react-router-dom";
 import Typography from "@mui/joy/Typography";
-import Button from "@mui/joy/Button";
 import Box from "@mui/joy/Box";
-import {ArrowBackRounded} from "@mui/icons-material";
+import {ArrowBackRounded, Laptop} from "@mui/icons-material";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Link from "@mui/joy/Link";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import {useEffect, useState} from "react";
 import IconButton from "@mui/joy/IconButton";
 
-const clientsLayout = () => {
+const ClientsLayout = () => {
     const [display, setDisplay] = useState<string>("");
     const params = useParams();
 
@@ -26,87 +24,41 @@ const clientsLayout = () => {
     return (
         <div>
             <Box sx={{display: 'flex', alignItems: 'center'}}>
+                {display !== "" ? <NavLink to={'/displays'}>
+                    <IconButton
+                        color="neutral"
+                        size="md"
+                    >
+                        <ArrowBackRounded/>
+                    </IconButton>
+                </NavLink> : null}
                 <Breadcrumbs
-                    size="sm"
+                    size="lg"
                     aria-label="breadcrumbs"
-                    separator={<ChevronRightRoundedIcon fontSize="sm"/>}
-                    sx={{pl: 0}}
+                    separator={<ChevronRightRoundedIcon fontSize="large"/>}
+                    sx={{pl: 0,fontSize: "22.5px"}}
                 >
                     <Link
                         underline="hover"
-                        color="neutral"
-                        sx={{fontSize: 12, fontWeight: 500}}
-                        component={NavLink}
-                        to={'/'}
-                    >
-                        <HomeRoundedIcon/>
-                        Dashboard
-                    </Link>
-                    <Link
-                        underline="hover"
-                        color="neutral"
-                        sx={{fontWeight: 500, fontSize: 12}}
+                        color={display == "" ? "" : ""}
+                        sx={{fontWeight: 500}}
                         component={NavLink}
                         to={'/displays'}
+                        fontSize={"inherit"}
                     >
+                        <Laptop sx={{marginRight:"4px",fontSize:"inherit"}}/>
                         Displays
                     </Link>
                     {display !== "" ?
-                        <Typography color="primary" sx={{fontWeight: 500, fontSize: 12}} component={NavLink}
+                        <Link color="primary" sx={{fontWeight: 500}} component={NavLink} fontSize={"inherit"}
                                     to={'/displays/client/' + params.clientId}>
                             {display}
-                        </Typography> : null
+                        </Link> : null
                     }
                 </Breadcrumbs>
             </Box>
-            {display == "" ?
-                <Box
-                    sx={{
-                        display: 'flex',
-                        mb: 1,
-                        gap: 1,
-                        flexDirection: {xs: 'column', sm: 'row'},
-                        alignItems: {xs: 'start', sm: 'center'},
-                        flexWrap: 'wrap',
-                        justifyContent: 'space-between',
-                    }}
-                >
-                    <Typography level="h2" component="h1">
-                        Displays Available
-                    </Typography>
-                    <Button
-                        color="primary"
-                        size="sm"
-                    >
-                        Invite Display
-                    </Button>
-                </Box> : <Box
-                    sx={{
-                        display: 'flex',
-                        mb: 1,
-                        gap: 1,
-                        flexDirection: {xs: 'column', sm: 'row'},
-                        alignItems: {xs: 'start', sm: 'center'},
-                        flexWrap: 'wrap',
-                        justifyContent: 'space-between',
-                    }}
-                >
-
-                    <Typography level="h2" component="h1">
-                        <NavLink to={'/displays'}>
-                            <IconButton
-                                color="primary"
-                                size="md"
-                            >
-                                <ArrowBackRounded/>
-                            </IconButton>
-                        </NavLink>
-                        Looking at Display: {display}
-                    </Typography>
-                </Box>
-            }
             <Box
-                sx={{mt: 5}}
+                sx={{mt: 1.5}}
             >
                 <Outlet/>
             </Box>
@@ -114,4 +66,4 @@ const clientsLayout = () => {
     )
 }
 
-export default clientsLayout;
+export default ClientsLayout;
