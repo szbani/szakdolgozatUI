@@ -10,6 +10,7 @@ import {Image, Videocam} from "@mui/icons-material";
 import Typography from "@mui/joy/Typography";
 import Dropzone from "react-dropzone";
 import {FileDropZone} from "./FileDropZone.tsx";
+import {SuccessSnackbar} from "../components/Snackbars.tsx";
 
 const FileUpload = () => {
     const [fileList, setFileList] = useState([]);

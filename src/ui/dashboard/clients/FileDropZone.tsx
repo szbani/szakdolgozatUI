@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {useDropzone} from "react-dropzone";
+import {ErrorSnackbar} from "../components/Snackbars.tsx";
 
 const thumbsContainer = {
     display: 'flex',
@@ -48,28 +49,40 @@ const videoThumb = {
 
 
 export const FileDropZone = (props) => {
+    const [eSnackbarMessage, seteSnackbarMessage] = useState("");
+    const [eSnackbarOpen, seteSnackbarOpen] = useState(false);
+
     const [files, setFiles] = useState([]);
-    const {getRootProps, getInputProps} = props.acceptedFileType == "Video" ? useDropzone({
+    const {fileRejections,getRootProps, getInputProps} = props.acceptedFileType == "Video" ? useDropzone({
         accept: {'video/*':[]},
+        maxFiles: 1,
         onDrop: acceptedFiles => {
+            // @ts-ignore
             setFiles(acceptedFiles.map(file => Object.assign(file, {
                 preview: URL.createObjectURL(file)
             })));
         }
     }): useDropzone({
         accept: {'image/*':[]},
+        maxFiles: 15,
         onDrop: acceptedFiles => {
+            // @ts-ignore
             setFiles(acceptedFiles.map(file => Object.assign(file, {
                 preview: URL.createObjectURL(file)
             })));
         }
     });
 
+    const errors = fileRejections.map(({ file, errors }) => {
+        const message = errors.map(e => e.message).join(', ');
+        return { file, message };
+    });
+
     const thumbs = files.map(file => (
         <div style={props.acceptedFileType =="Video" ? videoThumb :thumb} key={file.name}>
             <div style={thumbInner}>
                 {props.acceptedFileType =="Video" ?
-                    <video src={file.preview} controls muted  onLoad={() => {
+                    <video src={file.preview} controls muted loop onLoad={() => {
                         URL.revokeObjectURL(file.preview)
                     }}/>
                     :<img
@@ -89,6 +102,25 @@ export const FileDropZone = (props) => {
         return () => files.forEach(file => URL.revokeObjectURL(file.preview));
     }, [files]);
 
+    useEffect(() => {
+        if(errors.length == 0){
+            seteSnackbarMessage("");
+            seteSnackbarOpen(false);
+        }
+        else if (errors.length > 1 && props.acceptedFiles == "Video"){
+            seteSnackbarMessage("Multiple files rejected. Please upload only 1 video file");
+            seteSnackbarOpen(true);
+        }else if (errors.length > 15){
+            seteSnackbarMessage("Multiple files rejected. Please upload only 15 image files");
+            seteSnackbarOpen(true);
+        }else if(errors.length > 0){
+            seteSnackbarMessage(errors[0].message);
+            seteSnackbarOpen(true);
+        }
+        console.log("errors", errors);
+        console.log("eSnackbarOpen", eSnackbarOpen);
+    }, [errors.length]);
+
     return (
         <section className="container">
             <div {...getRootProps({className: 'dropzone'})}>
@@ -97,6 +129,7 @@ export const FileDropZone = (props) => {
             </div>
             <aside style={thumbsContainer}>
                 {thumbs}
+                <ErrorSnackbar message={eSnackbarMessage} open={eSnackbarOpen} setOpen={seteSnackbarOpen} ></ErrorSnackbar>
             </aside>
         </section>
     );
