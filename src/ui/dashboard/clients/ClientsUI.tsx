@@ -1,6 +1,6 @@
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
 import Card from "@mui/joy/Card";
-import {CardContent, Grid} from "@mui/joy";
+import {CardContent} from "@mui/joy";
 import Typography from "@mui/joy/Typography";
 import Box from "@mui/joy/Box";
 import {
@@ -19,6 +19,7 @@ import Dropdown from "@mui/joy/Dropdown";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import ListDivider from "@mui/joy/ListDivider";
 import {NavLink} from "react-router-dom";
+import Grid from "@mui/material/Grid2";
 
 interface IClient {
     NickName: string;
@@ -32,38 +33,31 @@ const ClientsUI = () => {
 
 
     return (<>
-            <Typography fontSize="30px" fontWeight="bold">Registered Displays</Typography>
+            <Typography fontSize="20px" fontWeight="bold">Registered Displays</Typography>
 
             <Grid
                 container
                 spacing={{xs: 2, md: 3}}
-                columns={{xs: 4, sm: 8, md: 12}}
-                margin={{xs: 2, sm: 3}}
-                sx={{flexGrow: 1}}
+                marginY={{xs: 0.75, sm: 1.5}}
                 direction="row"
+                sx={{flexGrow: 1}}
             >
                 {registeredDisplays.length === 0 ?
-                    <Typography level="title-lg" fontSize={25}>No Registered
-                        Displays</Typography> : ClientCards(registeredDisplays)}
+                    <Typography level="title-lg" fontSize={16}>
+                        No Registered Displays
+                    </Typography> : ClientCards(registeredDisplays)}
             </Grid>
-            <Typography fontSize="30px" fontWeight="bold">UnRegistered Displays</Typography>
+            <Typography fontSize="20px" fontWeight="bold">UnRegistered Displays</Typography>
             <Grid
                 container
                 spacing={{xs: 2, md: 3}}
                 columns={{xs: 4, sm: 8, md: 12}}
                 sx={{flexGrow: 1}}
-                margin={{xs: 2, sm: 3}}
+                marginTop={{xs: 0.75, sm: 1.5}}
             >
                 {unRegisteredDisplays.length === 0 ?
-                    <Typography level="title-lg" fontSize={25}>No Clients
+                    <Typography level="title-lg" fontSize={16}>No Clients
                         Connected</Typography> : ClientCards(unRegisteredDisplays)}
-            </Grid>
-            <Grid
-                container
-                spacing={{xs: 2, md: 3}}
-                columns={{xs: 4, sm: 8, md: 12}}
-                sx={{flexGrow: 1}}
-            >
             </Grid>
         </>
     )
@@ -115,22 +109,25 @@ const ClientCards = (clients: IClient[]) => {
     }
 
     const ListClients = clients.map((client, index) =>
-            <Grid key={index}>
+            <Grid size={{xs:6,sm:4,md:4,lg:3,xl:2.2}} key={index}>
                 <Card
                     color="neutral"
                     orientation="vertical"
                     size="md"
                     variant="outlined"
-                    sx={{minWidth: 250}}
                 >
                     <CardContent orientation="horizontal">
-                        <Box>
-                            <Typography paddingTop="3px" level="title-lg">{client.NickName ?? "Unregistered"}</Typography>
+
+                        <Box width={"70%"} >
+                            <Typography level="title-lg">{client.NickName ?? "Unregistered"}</Typography>
                             {client.ClientName ?
-                                <Typography fontSize="sm">KioskName: {client.ClientName}</Typography> : null}
+                                <Typography fontSize="sm" whiteSpace={'normal'} overflow={'auto'}
+                                            sx={{lineBreak: "anywhere"}} height={"60px"}>
+                                    KioskName:<br/> {client.ClientName}</Typography> : null}
                         </Box>
+
                         <Dropdown>
-                            <MenuButton sx={{border: "none", ml: 'auto', padding: "12px"}}>
+                            <MenuButton sx={{border: "none", padding: "12px", height: "min-content"}}>
                                 <MoreVert/>
                             </MenuButton>
 
@@ -176,7 +173,8 @@ const ClientCards = (clients: IClient[]) => {
                                         </Menu> :
                                         <Menu sx={{padding: "0px"}}>
                                             <MenuItem
-                                                onClick={() => RegisterDisplay(client.ClientName)} sx={{paddingY: "9px"}}><ListItemDecorator><AddToQueue/></ListItemDecorator>Register</MenuItem>
+                                                onClick={() => RegisterDisplay(client.ClientName)}
+                                                sx={{paddingY: "9px"}}><ListItemDecorator><AddToQueue/></ListItemDecorator>Register</MenuItem>
                                             <ListDivider sx={{margin: "0px"}}/>
                                             <MenuItem sx={{paddingBottom: "12px", marginTop: "0px"}} variant="soft"
                                                       color="danger"
@@ -195,19 +193,18 @@ const ClientCards = (clients: IClient[]) => {
                         <CardContent>
                             {client.Status ?    // @ts-ignore
                                 <Typography fontSize="md"><Circle color="danger" fontSize="md"/>Offline</Typography> :
-                                <>
-                                    <NavLink
-                                        to={"client/" + client.ClientName}
-                                        color="neutral"
-                                        // @ts-ignore
-                                        sx={{fontWeight: 'md'}}
-                                    >
-                                        <Typography fontSize="md">
-                                            {/*// @ts-ignore*/}
-                                            <Circle color="success" fontSize="md"/>Online</Typography>
-                                        Click To Manage
-                                    </NavLink>
-                                </>}
+                                <Typography component={NavLink}
+                                            to={"client/" + client.ClientName}
+                                            color="neutral"
+                                            sx={{fontWeight: 'bold', textDecoration: 'none'}}
+                                >
+                                    <Typography fontSize="md">
+                                        {/*// @ts-ignore*/}
+                                        <Circle color="success" fontSize="md"/>Online<br/>
+                                    </Typography>
+                                    Click To Manage
+                                </Typography>
+                            }
                         </CardContent>
                     </Box>
                 </Card>

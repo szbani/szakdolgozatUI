@@ -55,7 +55,6 @@ function ColorSchemeToggle(props: IconButtonProps) {
 const customTheme = extendTheme({ defaultColorScheme: 'dark' });
 
 
-
 export default function SignInUI() {
     const navigate = useNavigate();
     const [loginUrl, setLoginUrl] = React.useState<string | undefined>(undefined);
@@ -92,7 +91,8 @@ export default function SignInUI() {
 
         if (result.ok) {
             console.log('Logged in');
-            navigate('/', {replace: true});
+            sessionStorage.setItem('loggedIn', String(result.ok));
+            navigate('/', { replace: true });
         } else {
             console.log('Failed to login');
         }

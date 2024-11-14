@@ -1,13 +1,25 @@
 //@ts-nocheck
 import {NavLink, Outlet, useParams} from "react-router-dom";
-import Typography from "@mui/joy/Typography";
 import Box from "@mui/joy/Box";
-import {ArrowBackRounded, Laptop} from "@mui/icons-material";
+import {Laptop} from "@mui/icons-material";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Link from "@mui/joy/Link";
 import {useEffect, useState} from "react";
-import IconButton from "@mui/joy/IconButton";
+
+const linkStyle = {
+    p: 0.5,
+    display: "flex",
+    alignItems: "center",
+    fontSize: "inherit",
+    fontWeight: 500,
+    "&:hover": {
+        boxShadow: 'sm',
+        bgcolor: 'background.surface',
+        borderRadius: "md",
+        textDecoration: "none",
+    }
+};
 
 const ClientsLayout = () => {
     const [display, setDisplay] = useState<string>("");
@@ -22,35 +34,29 @@ const ClientsLayout = () => {
     }, [params.clientId]);
 
     return (
-        <div>
+        <Box>
             <Box sx={{display: 'flex', alignItems: 'center'}}>
-                {display !== "" ? <NavLink to={'/displays'}>
-                    <IconButton
-                        color="neutral"
-                        size="md"
-                    >
-                        <ArrowBackRounded/>
-                    </IconButton>
-                </NavLink> : null}
                 <Breadcrumbs
-                    size="lg"
                     aria-label="breadcrumbs"
                     separator={<ChevronRightRoundedIcon fontSize="large"/>}
-                    sx={{pl: 0,fontSize: "22.5px"}}
+                    sx={{
+                        pl: 0,
+                        bgcolor: 'background.level1',
+                        borderRadius: "xl",
+                        p: 1,
+                    }}
                 >
                     <Link
-                        underline="hover"
-                        color={display == "" ? "" : ""}
-                        sx={{fontWeight: 500}}
+                        color={display == "" ? "textcolor.secondary" : "neutral"}
                         component={NavLink}
                         to={'/displays'}
-                        fontSize={"inherit"}
+                        sx={linkStyle}
                     >
                         <Laptop sx={{marginRight:"4px",fontSize:"inherit"}}/>
                         Displays
                     </Link>
                     {display !== "" ?
-                        <Link color="primary" sx={{fontWeight: 500}} component={NavLink} fontSize={"inherit"}
+                        <Link color={"textcolor.secondary"} component={NavLink} sx={linkStyle}
                                     to={'/displays/client/' + params.clientId}>
                             {display}
                         </Link> : null
@@ -62,7 +68,7 @@ const ClientsLayout = () => {
             >
                 <Outlet/>
             </Box>
-        </div>
+        </Box>
     )
 }
 

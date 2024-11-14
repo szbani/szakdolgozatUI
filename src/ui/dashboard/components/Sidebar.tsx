@@ -24,7 +24,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
 import {closeSidebar} from '../utils.tsx';
-import {ComputerRounded, FolderRounded} from "@mui/icons-material";
+import {ComputerRounded} from "@mui/icons-material";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
 import {NavLink} from "react-router-dom";
 import {useEffect} from "react";
@@ -170,14 +170,6 @@ export default function Sidebar() {
                         </ListItemButton>
                     </ListItem>
 
-                    <ListItem>
-                        <ListItemButton selected={currentTab == "Files" ? true : false}>
-                            <FolderRounded/>
-                            <ListItemContent>
-                                <Typography onClick={() => setCurrentTab('files')} level="title-sm">Files</Typography>
-                            </ListItemContent>
-                        </ListItemButton>
-                    </ListItem>
                     <ListItem nested>
                         <Toggler
                             renderToggle={({open, setOpen}) => (
@@ -205,22 +197,9 @@ export default function Sidebar() {
                                     <ListItemButton
                                         role="menuitem"
                                         component="a"
-                                        href="/joy-ui/getting-started/templates/profile-dashboard/"
                                     >
                                         My profile
                                     </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        role="menuitem"
-                                        component="a"
-                                        href="/joy-ui/getting-started/templates/profile-dashboard/"
-                                    >
-                                        Create a new user
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton>Clients</ListItemButton>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemButton>Admins</ListItemButton>
@@ -263,7 +242,7 @@ export default function Sidebar() {
                         </IconButton>
                     </Stack>
                     <Typography level="body-xs">
-                        There are {registeredDisplays.length} device online ready to display content from Y devices.
+                        There are {registeredDisplays.length} device online ready to display content from {registeredDisplays.length} devices.
                     </Typography>
                     <LinearProgress variant="outlined" value={80} determinate sx={{my: 1}}/>
                 </Card>

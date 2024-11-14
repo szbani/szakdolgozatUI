@@ -56,7 +56,6 @@ const MediaPlayer = ({username, fileName}) => {
         console.log('MediaPlayer:', fileName);
     }, [fileName]);
 
-    // console.log('MediaPlayer:', fileName);
     return (
         <video ref={videoRef} muted controls autoPlay loop style={{width: windowSize.width, height: windowSize.height }}>
             <source src={`/${username}/${fileName}`} type="video/mp4"/>
@@ -68,8 +67,7 @@ const ShowCase = () => {
     const socket = ClientWebSocket();
     const [mediaType, setMediaType] = useState<string>('');
     // @ts-ignore
-    const [content, setContent] = useState(null);
-
+    // const [content, setContent] = useState(null);
 
 
     useEffect(() => {
@@ -103,8 +101,6 @@ const ShowCase = () => {
 
     return (
         <Box sx={{cursor: "none", width: '100%', height: '100%'}}>
-            {/*<VideoPlayer/>*/}
-            {/*<h1>{filePath}</h1>*/}
             {socket.fileNames && socket.fileNames.length > 0 && socket.username !== '' && mediaType === "image" ?
                 <SlideShow userName={socket.username} fileNames={socket.fileNames}/> : null}
             {socket.fileNames && socket.fileNames.length > 0 && socket.username !== '' && mediaType === "video" ?
