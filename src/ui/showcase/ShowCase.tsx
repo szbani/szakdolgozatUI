@@ -1,8 +1,9 @@
 import {ClientWebSocket} from "../../websocket/ClientWebSocketBase.ts";
-import Box from "@mui/joy/Box";
+import Box from "@mui/material/Box";
 import Carousel from "react-material-ui-carousel";
 import {Key, useEffect, useRef, useState} from "react";
 import {loadShowCaseConfig} from "./ShowCaseConfig.ts";
+
 
 // @ts-ignore
 const SlideShow = ({userName, fileNames}) => {
@@ -20,7 +21,10 @@ const SlideShow = ({userName, fileNames}) => {
     console.log('SlideShow:', fileNames);
 
     return (
-        <Carousel autoPlay={true} animation={"slide"} stopAutoPlayOnHover={false} indicators={false}
+        <Carousel autoPlay={true}
+                  animation={"slide"}
+                  stopAutoPlayOnHover={false}
+                  indicators={false}
                   interval={5000}
                   sx={{height: windowSize.height, width: windowSize.width}}>
             {
@@ -67,8 +71,6 @@ const ShowCase = () => {
     const socket = ClientWebSocket();
     const [mediaType, setMediaType] = useState<string>('');
     // @ts-ignore
-    // const [content, setContent] = useState(null);
-
 
     useEffect(() => {
         if (socket.username !== '') {

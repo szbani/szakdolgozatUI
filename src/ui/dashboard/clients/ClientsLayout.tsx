@@ -1,10 +1,9 @@
-//@ts-nocheck
 import {NavLink, Outlet, useParams} from "react-router-dom";
-import Box from "@mui/joy/Box";
+import Box from "@mui/material/Box";
 import {Laptop} from "@mui/icons-material";
-import Breadcrumbs from "@mui/joy/Breadcrumbs";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import Link from "@mui/joy/Link";
+import Link from "@mui/material/Link";
 import {useEffect, useState} from "react";
 
 const linkStyle = {
@@ -15,8 +14,8 @@ const linkStyle = {
     fontWeight: 500,
     "&:hover": {
         boxShadow: 'sm',
-        bgcolor: 'background.surface',
-        borderRadius: "md",
+        bgcolor: 'white',
+        borderRadius: 3,
         textDecoration: "none",
     }
 };
@@ -41,13 +40,13 @@ const ClientsLayout = () => {
                     separator={<ChevronRightRoundedIcon fontSize="large"/>}
                     sx={{
                         pl: 0,
-                        bgcolor: 'background.level1',
-                        borderRadius: "xl",
+                        bgcolor: 'grey',
+                        borderRadius: 4,
                         p: 1,
                     }}
                 >
                     <Link
-                        color={display == "" ? "textcolor.secondary" : "neutral"}
+                        // color={display == "" ? "textcolor.secondary" : "neutral"}
                         component={NavLink}
                         to={'/displays'}
                         sx={linkStyle}
@@ -56,7 +55,10 @@ const ClientsLayout = () => {
                         Displays
                     </Link>
                     {display !== "" ?
-                        <Link color={"textcolor.secondary"} component={NavLink} sx={linkStyle}
+                        <Link
+                            // color={"textcolor.secondary"}
+                            component={NavLink}
+                            sx={linkStyle}
                                     to={'/displays/client/' + params.clientId}>
                             {display}
                         </Link> : null

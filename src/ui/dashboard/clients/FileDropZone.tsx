@@ -1,12 +1,11 @@
-//@ts-nocheck
 import {useEffect, useMemo, useState} from "react";
 import {useDropzone} from "react-dropzone";
 import {AppSnackbar} from "../components/Snackbars.tsx";
-import {ColorPaletteProp} from "@mui/joy/styles";
+// import {ColorPaletteProp} from "@mui/material/styles";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
 import {useParams} from "react-router-dom";
-import Button from "@mui/joy/Button";
-import Box from "@mui/joy/Box";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 
 const thumbsContainer = {
@@ -30,16 +29,11 @@ const thumb = {
     boxSizing: 'border-box'
 };
 
-const thumbInner = {
-    display: 'flex',
-    minWidth: 0,
-    overflow: 'hidden'
-};
-
 const img = {
     display: 'block',
-    width: 'auto',
-    height: '100%'
+    width: 'inherit',
+    height: '100%',
+    objectFit: 'contain'
 };
 
 const videoThumb = {
@@ -49,7 +43,7 @@ const videoThumb = {
     marginRight: 8,
     // width: "100%",
     height: "100%",
-    objectFit: 'cover',
+    objectFit: 'fits',
     padding: 4,
     boxSizing: 'border-box'
 }
@@ -86,7 +80,8 @@ const rejectStyle = {
 export const FileDropZone = (props) => {
     const [eSnackbarMessage, seteSnackbarMessage] = useState("");
     const [eSnackbarOpen, seteSnackbarOpen] = useState(false);
-    const [eSnackbarStatus, seteSnackbarStatus] = useState<ColorPaletteProp>("neutral");
+    //todo implement colors
+    const [eSnackbarStatus, seteSnackbarStatus] = useState<string>("neutral");
 
     // @ts-ignore
     const {sendMessage, uploading, setUploading, getFilesOfUser, fileNames} = useWebSocketContext();
@@ -104,6 +99,7 @@ export const FileDropZone = (props) => {
     } = props.acceptedFileType == "video" ? useDropzone({
         accept: {'video/*': []},
         maxFiles: 1,
+        maxSize: 5368709120,
         onDrop: acceptedFiles => {
             // @ts-ignore
             setFiles(acceptedFiles.map(file => Object.assign(file, {
@@ -115,6 +111,7 @@ export const FileDropZone = (props) => {
     }) : useDropzone({
         accept: {'image/*': []},
         maxFiles: 15,
+        maxSize: 104857600,
         onDrop: acceptedFiles => {
             // @ts-ignore
             setFiles(acceptedFiles.map(file => Object.assign(file, {
@@ -206,22 +203,20 @@ export const FileDropZone = (props) => {
     });
 
     const thumbs = files.map(file => (
-        <div style={props.acceptedFileType == "video" ? videoThumb : thumb} key={file.name}>
-            <div style={thumbInner}>
-                {props.acceptedFileType == "video" ?
-                    <video src={file.preview} controls muted loop onLoad={() => {
+        <Box style={props.acceptedFileType == "video" ? videoThumb : thumb} key={file.name}>
+            {props.acceptedFileType == "video" ?
+                <video src={file.preview} controls muted loop onLoad={() => {
+                    URL.revokeObjectURL(file.preview)
+                }}/>
+                : <img
+                    src={file.preview}
+                    style={img}
+                    // Revoke data uri after image is loaded
+                    onLoad={() => {
                         URL.revokeObjectURL(file.preview)
-                    }}/>
-                    : <img
-                        src={file.preview}
-                        style={img}
-                        // Revoke data uri after image is loaded
-                        onLoad={() => {
-                            URL.revokeObjectURL(file.preview)
-                        }}
-                    />}
-            </div>
-        </div>
+                    }}
+                />}
+        </Box>
     ));
 
     useEffect(() => {
@@ -265,21 +260,30 @@ export const FileDropZone = (props) => {
         <Box>
             <section className="container">
                 <Grid container spacing={2}>
-                    <Grid size={{sm:12,lg:6}} sx={{textAlign:"center", display:'flex', alignItems: 'center', justifyContent: 'center', width:'100%', height:'100%'}} {...getRootProps({style})}>
+                    <Grid size={{sm: 12, lg: 6}} sx={{
+                        textAlign: "center",
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        height: '100%'
+                    }} {...getRootProps({style})}>
                         <input {...getInputProps()} />
                         {props.acceptedFileType == "video" ?
                             <p>Drag 'n' drop a video file here, or click to select a file</p> :
                             <p>Drag 'n' drop some Images here, or click to select files (15 max)</p>}
                     </Grid>
-                    <Grid size={{xs:12,lg:6}}>
+                    <Grid size={{xs: 12, lg: 6}}>
                         <aside style={thumbsContainer}>
                             {thumbs}
                             <AppSnackbar message={eSnackbarMessage} open={eSnackbarOpen} setOpen={seteSnackbarOpen}
-                                         status={eSnackbarStatus as ColorPaletteProp}></AppSnackbar>
+                                         status={eSnackbarStatus}></AppSnackbar>
                         </aside>
                     </Grid>
-                    <Grid size={12}>
-                        <Button color={"primary"} fullWidth={true} onClick={handleUpload}>Upload</Button>
+                    <Grid minHeight={50} size={12}>
+                        {files.length > 0 ?
+                            <Button color={"primary"} fullWidth={true} onClick={handleUpload}>Upload</Button>
+                            : null}
                     </Grid>
                 </Grid>
             </section>

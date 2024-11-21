@@ -1,14 +1,13 @@
-import {Snackbar} from "@mui/joy";
+import {Snackbar} from "@mui/material";
 import {Close, Error} from "@mui/icons-material";
-import Button from "@mui/joy/Button";
+import Button from "@mui/material/Button";
 import {useEffect, useState} from "react";
-import {ColorPaletteProp} from "@mui/joy/styles";
 
 export interface SnackbarProps {
     setOpen: (open: boolean) => void;
     open: boolean;
     message: string;
-    status:  ColorPaletteProp;
+    status:  string;
 }
 
 export const AppSnackbar = (props: SnackbarProps) => {
@@ -26,7 +25,6 @@ export const AppSnackbar = (props: SnackbarProps) => {
         <Snackbar
             color={status}
             variant={"soft"}
-            size={"lg"}
             open={open}
             autoHideDuration={10000}
             // @ts-ignore
@@ -41,7 +39,6 @@ export const AppSnackbar = (props: SnackbarProps) => {
             endDecorator={
                 <Button
                     onClick={() => setOpen(false)}
-                    size={"sm"}
                     variant={"soft"}
                     color={status}
                 >
