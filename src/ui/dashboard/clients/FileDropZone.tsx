@@ -1,7 +1,7 @@
+//@ts-nocheck
 import {useEffect, useMemo, useState} from "react";
 import {useDropzone} from "react-dropzone";
 import {AppSnackbar} from "../components/Snackbars.tsx";
-// import {ColorPaletteProp} from "@mui/material/styles";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
 import {useParams} from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -140,10 +140,7 @@ export const FileDropZone = (props) => {
 
     useEffect(() => {
         //start uploading
-        // console.log('Uploading:', uploading);
-        // console.log('FileList:', filesToUpload);
         if (uploading && filesToUpload.length > 0) {
-            // console.log('Uploading');
 
             const jsonToSend = JSON.stringify({
                 type: 'startFileStream',
@@ -172,7 +169,6 @@ export const FileDropZone = (props) => {
                     if (offset < file.size) {
                         readSlice(file, offset);
                     } else {
-                        console.log('File Uploaded');
                         const jsonToSend = JSON.stringify({
                             type: 'endFileStream',
                             targetUser: clientId
@@ -186,7 +182,6 @@ export const FileDropZone = (props) => {
             readSlice(file, offset);
         }
         if (uploading && filesToUpload.length == 0) {
-            // console.log('Sending update request');
             const jsonToSend = JSON.stringify({
                 type: 'sendUpdateRequestToUser',
                 targetUser: clientId
@@ -231,18 +226,16 @@ export const FileDropZone = (props) => {
         } else if (errors.length > 1 && props.acceptedFiles == "Video") {
             seteSnackbarMessage("Multiple files rejected. Please upload only 1 video file");
             seteSnackbarOpen(true);
-            seteSnackbarStatus("danger");
+            seteSnackbarStatus("error");
         } else if (errors.length > 15) {
             seteSnackbarMessage("Multiple files rejected. Please upload only 15 image files");
             seteSnackbarOpen(true);
-            seteSnackbarStatus("danger");
+            seteSnackbarStatus("error");
         } else if (errors.length > 0) {
             seteSnackbarMessage(errors[0].message);
             seteSnackbarOpen(true);
-            seteSnackbarStatus("danger");
+            seteSnackbarStatus("error");
         }
-        // console.log("errors", errors);
-        // console.log("eSnackbarOpen", eSnackbarOpen);
     }, [errors.length]);
 
     const style = useMemo(() => ({
@@ -282,7 +275,28 @@ export const FileDropZone = (props) => {
                     </Grid>
                     <Grid minHeight={50} size={12}>
                         {files.length > 0 ?
-                            <Button color={"primary"} fullWidth={true} onClick={handleUpload}>Upload</Button>
+                            <Button
+                                disabled={uploading}
+                                fullWidth={true}
+                                onClick={handleUpload}
+                                sx={(theme) => ({
+                                    "borderRadius": "12px",
+                                    "backgroundColor": theme.palette.mode == 'light' ?
+                                        "#1B6B51" :
+                                        "#8BD6B6",
+                                    "color": theme.palette.mode == 'light' ?
+                                        "#FFFFFF" :
+                                        "#303633",
+                                    "&:hover": {
+                                        "backgroundColor": theme.palette.mode == 'light' ?
+                                            "#4C6358" :
+                                            "#B3CCBF",
+                                    }
+                                })
+                            }
+                            >
+                                {uploading ? "Uploading" : "Upload"}
+                            </Button>
                             : null}
                     </Grid>
                 </Grid>

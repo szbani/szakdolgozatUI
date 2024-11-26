@@ -3,10 +3,12 @@ import Box from "@mui/material/Box";
 import Carousel from "react-material-ui-carousel";
 import {Key, useEffect, useRef, useState} from "react";
 import {loadShowCaseConfig} from "./ShowCaseConfig.ts";
+import {slideShowProps} from "../dashboard/clients/ClientUI.tsx";
+import {CarouselProps} from "react-material-ui-carousel/dist/components/types";
 
 
 // @ts-ignore
-const SlideShow = ({userName, fileNames}) => {
+const SlideShow = (props: slideShowProps) => {
     const [windowSize, setWindowSize] = useState({width: window.innerWidth, height: window.innerHeight});
     useEffect(() => {
         const handleResize = () => {
@@ -18,20 +20,21 @@ const SlideShow = ({userName, fileNames}) => {
         }
     }, []);
     // console.log('SlideShow:', userName);
-    console.log('SlideShow:', fileNames);
+    // console.log('SlideShow:', props.fileNames);
 
     return (
         <Carousel autoPlay={true}
-                  animation={"slide"}
+                  animation={props.transitionStyle as CarouselProps['animation']}
+                  duration={props.transitionDuration * 1000}
                   stopAutoPlayOnHover={false}
                   indicators={false}
-                  interval={5000}
+                  interval={props.interval * 1000}
                   sx={{height: windowSize.height, width: windowSize.width}}>
             {
-                fileNames.map((fileName: string | undefined, index: Key | null | undefined) => {
+                props.fileNames.map((fileName: string | undefined, index: Key | null | undefined) => {
                     return (
-                        <img key={index} src={`/${userName}/${fileName}`} alt={fileName}
-                             style={{width: windowSize.width, height: windowSize.height}}/>
+                        <img key={index} src={`/${props.clientId}/${fileName}`} alt={fileName}
+                             style={{objectFit: props.objectFit, width: windowSize.width, height: windowSize.height}}/>
                     )
                 })
             }
@@ -61,7 +64,7 @@ const MediaPlayer = ({username, fileName}) => {
     }, [fileName]);
 
     return (
-        <video ref={videoRef} muted controls autoPlay loop style={{width: windowSize.width, height: windowSize.height }}>
+        <video ref={videoRef} muted controls autoPlay loop style={{width: windowSize.width, height: windowSize.height}}>
             <source src={`/${username}/${fileName}`} type="video/mp4"/>
         </video>
     )
@@ -70,7 +73,21 @@ const MediaPlayer = ({username, fileName}) => {
 const ShowCase = () => {
     const socket = ClientWebSocket();
     const [mediaType, setMediaType] = useState<string>('');
+    const [slideShowConfig, setSlideShowConfig] = useState<slideShowProps>({
+        clientId: "",
+        fileNames: [],
+        transitionStyle: "slide",
+        transitionDuration: 1,
+        interval: 5000,
+        objectFit: "fill",
+    });
     // @ts-ignore
+    useEffect(() => {
+        if (socket.newConfig) {
+            loadConfig(socket.username);
+            socket.setNewConfig(false);
+        }
+    }, [socket.newConfig]);
 
     useEffect(() => {
         if (socket.username !== '') {
@@ -82,9 +99,21 @@ const ShowCase = () => {
         try {
             console.log('loadConfig:', userId);
             const config = await loadShowCaseConfig(userId);
-            console.log('config:',config);
+            console.log('config:', config);
             if (config !== null) {
                 setMediaType(config?.mediaType);
+                if (config?.mediaType === "image") {
+                    setSlideShowConfig({
+                        clientId: userId,
+                        fileNames: socket.fileNames as string[],
+                        transitionStyle: config?.transitionStyle,
+                        transitionDuration: config?.transitionDuration,
+                        interval: config?.imageInterval,
+                        // @ts-ignore
+                        objectFit: config?.imageFit,
+                    });
+                }
+
             }
         } catch (error) {
             console.error('Error loading config:', error);
@@ -104,7 +133,14 @@ const ShowCase = () => {
     return (
         <Box sx={{cursor: "none", width: '100%', height: '100%'}}>
             {socket.fileNames && socket.fileNames.length > 0 && socket.username !== '' && mediaType === "image" ?
-                <SlideShow userName={socket.username} fileNames={socket.fileNames}/> : null}
+                <SlideShow
+                    clientId={slideShowConfig.clientId}
+                    fileNames={slideShowConfig.fileNames}
+                    transitionStyle={slideShowConfig.transitionStyle}
+                    transitionDuration={slideShowConfig.transitionDuration}
+                    interval={slideShowConfig.interval}
+                    objectFit={slideShowConfig.objectFit}
+                /> : null}
             {socket.fileNames && socket.fileNames.length > 0 && socket.username !== '' && mediaType === "video" ?
                 <MediaPlayer username={socket.username} fileName={socket.fileNames}/> : null}
         </Box>

@@ -7,15 +7,13 @@ import Link from "@mui/material/Link";
 import {useEffect, useState} from "react";
 
 const linkStyle = {
-    p: 0.5,
+    p: 1,
     display: "flex",
     alignItems: "center",
     fontSize: "inherit",
     fontWeight: 500,
     "&:hover": {
         boxShadow: 'sm',
-        bgcolor: 'white',
-        borderRadius: 3,
         textDecoration: "none",
     }
 };
@@ -40,13 +38,13 @@ const ClientsLayout = () => {
                     separator={<ChevronRightRoundedIcon fontSize="large"/>}
                     sx={{
                         pl: 0,
-                        bgcolor: 'grey',
+                        bgcolor: "background.paper",
                         borderRadius: 4,
-                        p: 1,
+                        padding: 0.5,
                     }}
                 >
                     <Link
-                        // color={display == "" ? "textcolor.secondary" : "neutral"}
+                        // color={display == "" ? "primary" : "neutral"}
                         component={NavLink}
                         to={'/displays'}
                         sx={linkStyle}
@@ -56,7 +54,7 @@ const ClientsLayout = () => {
                     </Link>
                     {display !== "" ?
                         <Link
-                            // color={"textcolor.secondary"}
+                            // color={"secondary"}
                             component={NavLink}
                             sx={linkStyle}
                                     to={'/displays/client/' + params.clientId}>

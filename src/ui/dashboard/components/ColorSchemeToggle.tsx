@@ -3,7 +3,7 @@ import { useColorScheme } from '@mui/material/styles';
 import IconButton, {IconButtonProps} from '@mui/material/IconButton';
 
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
-import LightModeIcon from '@mui/icons-material/LightMode';
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 
 export default function ColorSchemeToggle(props: IconButtonProps) {
     const { onClick, sx, ...other } = props;
@@ -15,8 +15,6 @@ export default function ColorSchemeToggle(props: IconButtonProps) {
     if (!mounted) {
         return (
             <IconButton
-                variant="outlined"
-                color="neutral"
                 {...other}
                 sx={sx}
                 disabled
@@ -25,30 +23,15 @@ export default function ColorSchemeToggle(props: IconButtonProps) {
     }
     return (
         <IconButton
-            data-screenshot="toggle-mode"
-            variant="outlined"
-            color="neutral"
-            {...other}
+            aria-label="toggle light/dark mode"
+            disabled={!mounted}
             onClick={(event) => {
-                if (mode === 'light') {
-                    setMode('dark');
-                } else {
-                    setMode('light');
-                }
+                setMode(mode === 'light' ? 'dark' : 'light');
                 onClick?.(event);
             }}
-            sx={[
-                mode === 'dark'
-                    ? { '& > *:first-child': { display: 'none' } }
-                    : { '& > *:first-child': { display: 'initial' } },
-                mode === 'light'
-                    ? { '& > *:last-child': { display: 'none' } }
-                    : { '& > *:last-child': { display: 'initial' } },
-                ...(Array.isArray(sx) ? sx : [sx]),
-            ]}
+            {...other}
         >
-            <DarkModeRoundedIcon />
-            <LightModeIcon />
+            {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
         </IconButton>
     );
 }

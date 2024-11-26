@@ -5,7 +5,7 @@ import {AppSnackbar} from "./components/Snackbars.tsx";
 import {useWebSocketContext} from "../../websocket/WebSocketContext.tsx";
 import ResponsiveDrawer from "./components/Sidebar";
 import {ThemeProvider} from "@mui/material";
-import {MainTheme} from "../../Themes/MainTheme.ts";
+import {MainTheme} from "../../Themes/MainTheme/MainTheme.ts";
 import CssBaseline from "@mui/material/CssBaseline";
 
 export default function Dashboard() {
@@ -15,12 +15,11 @@ export default function Dashboard() {
         <ThemeProvider theme={MainTheme}>
             <CssBaseline/>
             <Box sx={{display: 'flex', minHeight: '100dvh'}}>
-                asd
                 {/*<Header/>*/}
                 <ResponsiveDrawer/>
                 <Box
                     marginTop={{xs: 10, md: 2}}
-                    marginLeft={{xs: 0, sm: 0, md: 'var(--Sidebar-width)'}}
+                    marginLeft={{xs: 0, md: 2}}
                     component="main"
                     className="MainContent"
                     sx={{
@@ -42,11 +41,11 @@ export default function Dashboard() {
                 >
                     <Outlet/>
                 </Box>
-                {/*<AppSnackbar*/}
-                {/*    setOpen={snackbarProps.setOpen}*/}
-                {/*    open={snackbarProps.open}*/}
-                {/*    message={snackbarProps.message}*/}
-                {/*    status={snackbarProps.status}/>*/}
+                <AppSnackbar
+                    setOpen={snackbarProps.setOpen}
+                    open={snackbarProps.open}
+                    message={snackbarProps.message}
+                    status={snackbarProps.status}/>
             </Box>
         </ThemeProvider>
     );

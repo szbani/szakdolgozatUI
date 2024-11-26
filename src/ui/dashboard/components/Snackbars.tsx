@@ -1,5 +1,5 @@
-import {Snackbar} from "@mui/material";
-import {Close, Error} from "@mui/icons-material";
+import {Alert, AlertColor, Snackbar} from "@mui/material";
+import {CloseRounded} from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import {useEffect, useState} from "react";
 
@@ -7,24 +7,20 @@ export interface SnackbarProps {
     setOpen: (open: boolean) => void;
     open: boolean;
     message: string;
-    status:  string;
+    status:  AlertColor;
 }
 
 export const AppSnackbar = (props: SnackbarProps) => {
     const [open, setOpen] = useState(false);
-    // console.log("props", props);
     const status = props.status;
     const message = props.message;
     useEffect(() => {
-        // console.log("open", props.open);
         if (message != "" && props.open)
             setOpen(true);
-        props.setOpen(false);
+        // props.setOpen(false);
     }, [props.open]);
     return (
         <Snackbar
-            color={status}
-            variant={"soft"}
             open={open}
             autoHideDuration={10000}
             // @ts-ignore
@@ -33,19 +29,29 @@ export const AppSnackbar = (props: SnackbarProps) => {
                     return;
                 }
                 setOpen(false);
+                props.setOpen(false);
             }}
             anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-            startDecorator={<Error/>}
-            endDecorator={
-                <Button
-                    onClick={() => setOpen(false)}
-                    variant={"soft"}
-                    color={status}
-                >
-                    <Close/>
-                </Button>}
         >
-            {message}
+            <Alert
+                severity={status}
+                action={
+                    <Button
+                        color="inherit"
+                        size="small"
+                        onClick={() => {
+                            setOpen(false);
+                            props.setOpen(false);
+                        }}
+                        sx={{backgroundColor: status}}
+                    >
+                        <CloseRounded fontSize={"small"}/>
+                    </Button>
+                }
+                sx={{padding:1,fontSize: "1rem"}}
+            >
+                {message}
+            </Alert>
         </Snackbar>
     )
 }

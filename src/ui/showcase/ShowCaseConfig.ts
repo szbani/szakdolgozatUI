@@ -1,6 +1,9 @@
 interface ShowCaseConfig {
     mediaType: string;
-
+    transitionStyle: string,
+    transitionDuration: number,
+    imageInterval: number,
+    imageFit: string,
 }
 
 let config: ShowCaseConfig | null = null;

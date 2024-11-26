@@ -11,6 +11,7 @@ export const ClientWebSocket = () => {
 
     const [searchParams] = useSearchParams();
     const [username, setUsername] = useState('');
+    const [newConfig, setNewConfig] = useState<boolean>(false);
 
     const [fileNames, setFileNames] = useState<string[]>();
     useEffect(() => {
@@ -75,6 +76,10 @@ export const ClientWebSocket = () => {
                 case 'pong':
                     console.log('Received pong');
                     break;
+                case 'configUpdated':
+                    console.log('Received config update');
+                    setNewConfig(true);
+                    break;
                 default:
                     console.log('Unknown message type', parsedMessage.type);
             }
@@ -95,6 +100,8 @@ export const ClientWebSocket = () => {
         userMessages,
         username,
         getFileForUser,
-        fileNames
+        fileNames,
+        setNewConfig,
+        newConfig
     }
 }

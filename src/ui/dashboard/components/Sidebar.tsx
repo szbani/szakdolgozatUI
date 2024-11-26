@@ -3,13 +3,12 @@ import {
     Drawer, LinearProgress,
     ListItemButton,
     listItemButtonClasses,
-    ListItemIcon,
     Toolbar
 } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import {CloseRounded, ComputerRounded, HomeRounded, LogoutRounded, SettingsRounded} from "@mui/icons-material";
+import {CloseRounded, ComputerRounded, LogoutRounded, Person, SettingsRounded} from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import IconButton from "@mui/material/IconButton";
@@ -18,7 +17,6 @@ import Typography from "@mui/material/Typography";
 import {useEffect, useState} from "react";
 import ColorSchemeToggle from "./ColorSchemeToggle.tsx";
 import {NavLink} from "react-router-dom";
-// import ListItemContent from "@mui/material/ListItemContent";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
@@ -72,41 +70,47 @@ export default function ResponsiveDrawer() {
         }}>
             <Box sx={{display: 'flex', gap: 1, alignItems: 'center'}} height={"fit-content"}>
                 <Typography variant={'h6'} fontWeight={"bold"}>Display Manager.</Typography>
-                <ColorSchemeToggle sx={{ml: 'auto'}}/>
+                <ColorSchemeToggle/>
             </Box>
             <Divider/>
             <Box
-                 sx={{
-                     minHeight: 0,
-                     overflow: 'hidden auto',
-                     flexGrow: 1,
-                     display: 'flex',
-                     flexDirection: 'column',
-                     [`& .${listItemButtonClasses.root}`]: {
-                         gap: 1.5,
-                     },
-                 }}
+                sx={{
+                    minHeight: 0,
+                    overflow: 'hidden auto',
+                    flexGrow: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    [`& .${listItemButtonClasses.root}`]: {
+                        gap: 1.5,
+                    },
+                }}
             >
                 <List
                     component={"nav"}
                 >
-                    <ListItem sx={{paddingX: 0}}>
-                        <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"/"}
-                                        selected={currentTab == "" ? true : false}>
-                            <HomeRounded/>
-                            <ListItemIcon>
-                                <Typography onClick={() => setCurrentTab('')}>Home</Typography>
-                            </ListItemIcon>
-                        </ListItemButton>
-                    </ListItem>
+                    {/*<ListItem sx={{paddingX: 0}}>*/}
+                    {/*    <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"/"}*/}
+                    {/*                    selected={currentTab == "" ? true : false}*/}
+                    {/*                    onClick={() => setCurrentTab('')}>*/}
+                    {/*        <HomeRounded/>*/}
+                    {/*        <Typography>Home</Typography>*/}
+                    {/*    </ListItemButton>*/}
+                    {/*</ListItem>*/}
 
                     <ListItem sx={{paddingX: 0}}>
-                        <ListItemButton sx={{borderRadius: 3}} id={'Onlinedisplays'} component={NavLink} to={"displays"}
-                                        selected={currentTab == "displays" ? true : false}>
+                        <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"displays"}
+                                        selected={currentTab == "displays" ? true : false}
+                                        onClick={() => setCurrentTab('displays')}>
                             <ComputerRounded/>
-                            <Box>
-                                <Typography onClick={() => setCurrentTab('displays')}>Displays</Typography>
-                            </Box>
+                            <Typography>Displays</Typography>
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem sx={{paddingX: 0}}>
+                        <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"accounts"}
+                                        selected={currentTab == "accounts" ? true : false}
+                                        onClick={() => setCurrentTab('accounts')}>
+                            <Person/>
+                            <Typography>Accounts</Typography>
                         </ListItemButton>
                     </ListItem>
                 </List>
@@ -150,12 +154,11 @@ export default function ResponsiveDrawer() {
             <Divider/>
             <Box sx={{display: 'flex', gap: 1, alignItems: 'center'}}>
                 <Avatar
-                    // variant="outlined"
                     src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
                 />
                 <Box sx={{minWidth: 0, flex: 1}}>
-                    <Typography >Siriwat K.</Typography>
-                    <Typography >siriwatk@test.com</Typography>
+                    <Typography>Siriwat K.</Typography>
+                    <Typography>siriwatk@test.com</Typography>
                 </Box>
                 <IconButton>
                     <LogoutRounded/>

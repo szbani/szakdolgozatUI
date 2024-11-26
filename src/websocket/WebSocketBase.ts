@@ -12,17 +12,31 @@ export const Websocket = (socketUrl: string) => {
     const navigate = useNavigate();
     const [fileNames, setFileNames] = useState([""]);
     const loggedIn = sessionStorage.getItem('loggedIn');
+
+    const [newConfig, setNewConfig] = useState<boolean>(false);
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarProps, setSnackbarProps] = useState<SnackbarProps>({
-        setOpen: () => {},
+        setOpen: () => {
+        },
         open: false,
         message: '',
-        status: 'neutral',
+        status: 'info',
     });
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     if (!loggedIn) {
         navigate('/signin');
     }
+    useEffect(() => {
+        if (!snackbarOpen) {
+            setSnackbarProps({
+                setOpen: setSnackbarOpen,
+                open: false,
+                message: '',
+                status: 'info',
+            });
+        }
+    }, [snackbarOpen]);
 
     useEffect(() => {
         if (!loggedIn) {
@@ -66,6 +80,7 @@ export const Websocket = (socketUrl: string) => {
                     break;
                 case'fileArrived':
                     setUploading(true);
+                    // console.log('File arrived:', parsedMessage.content);
                     break;
                 case 'pong':
                     console.log('Received pong');
@@ -75,21 +90,34 @@ export const Websocket = (socketUrl: string) => {
                     setFileNames(parsedMessage.content);
                     break;
                 case 'Error':
-                    console.log('Error:', parsedMessage.content);
+                    // console.log('Error:', parsedMessage.content);
                     setSnackbarOpen(true);
                     setSnackbarProps({
                         setOpen: setSnackbarOpen,
-                        open: snackbarOpen,
+                        open: true,
                         message: parsedMessage.content,
-                        status: 'danger',
+                        status: 'error',
                     });
                     break;
+                case "fileStreamStarted":
+                    // console.log('File stream started:', parsedMessage.content);
+                    break;
                 case 'Success':
-                    console.log('Success:', parsedMessage.content);
+                    // console.log('Success:', parsedMessage.content);
                     setSnackbarOpen(true);
                     setSnackbarProps({
                         setOpen: setSnackbarOpen,
-                        open: snackbarOpen,
+                        open: true,
+                        message: parsedMessage.content,
+                        status: 'success',
+                    });
+                    break;
+                case "ConfigUpdated":
+                    setNewConfig(true);
+                    setSnackbarOpen(true);
+                    setSnackbarProps({
+                        setOpen: setSnackbarOpen,
+                        open: true,
                         message: parsedMessage.content,
                         status: 'success',
                     });
@@ -121,5 +149,7 @@ export const Websocket = (socketUrl: string) => {
         uploading,
         setUploading,
         snackbarProps,
+        setNewConfig,
+        newConfig
     }
 }
