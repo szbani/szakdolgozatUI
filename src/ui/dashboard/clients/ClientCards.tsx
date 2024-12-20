@@ -15,6 +15,7 @@ interface EditDialogHandler {
 }
 
 export const ClientCards = (clients: IClient[], editDialogHandler: EditDialogHandler) => {
+    // console.log(clients);
     const ListClients = clients.map((client, index) =>
             <Grid size={{xs: 6, sm: 4, md: 4, lg: 3, xl: 2.2}} key={index}>
                 <Card
@@ -26,16 +27,16 @@ export const ClientCards = (clients: IClient[], editDialogHandler: EditDialogHan
                             <Client client={client} index={index} EditDialogHandler={editDialogHandler}/>
                         }
                         title={client.NickName ?? "Unregistered"}
-                        subheader={`KioskName: ${client.ClientName}`}
+                        subheader={`KioskName: ${client.KioskName}`}
                         sx={{lineBreak: "anywhere", overflow: 'auto', whiteSpace: 'normal', paddingBottom:1}}
                     >
                     </CardHeader>
-                    <CardContent sx={{paddingY:0, overflow:"scroll", whiteSpace: 'normal',lineBreak:'normal'}}>
+                    <CardContent sx={{paddingY:0, overflow:"auto", whiteSpace: 'normal',lineBreak:'normal'}}>
                         <Typography variant="body2" color="text.secondary">
                             {client.Description}
                         </Typography>
                     </CardContent>
-                    <Box component={client.ClientName != null ? NavLink : Box} to={"client/" + client.ClientName}>
+                    <Box component={client.KioskName != null ? NavLink : Box} to={"client/" + client.KioskName}>
                         <CardContent>
                             {client.Status ?
                                 <Typography>

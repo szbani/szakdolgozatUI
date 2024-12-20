@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 export interface IClient {
     Id: number;
     NickName: string;
-    ClientName: string;
+    KioskName: string;
     Description: string;
     Status: boolean;
 }
@@ -22,7 +22,7 @@ const ClientsUI = () => {
     const [editDialogData, setEditDialogData] = useState<IClient>({
         Id: 0,
         NickName: "",
-        ClientName: "",
+        KioskName: "",
         Description: "",
         Status: false,
     });

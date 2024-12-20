@@ -154,7 +154,7 @@ const CurrentlyPlaying = () => {
         <Box marginBottom={4}>
             <Grid container spacing={4}>
                 <Grid size={{xs: 12, sm: 12, md: 6, lg: 6.5, xl: 7}}>
-                    <Card>
+                    <Card sx={{minHeight: {sx:320, md:470, lg:320}}}>
                         <CardHeader
                             title={<Typography
                                 fontSize={24}
@@ -188,7 +188,7 @@ const CurrentlyPlaying = () => {
                     </Card>
                 </Grid>
                 <Grid size={{xs: 12, sm: 12, md: 6, lg: 5.5, xl: 5}}>
-                    <Card>
+                    <Card sx={{minHeight: {sx:320, md:470, lg:320}}}>
                         <CardHeader
                             title={<Typography
                                 fontSize={24}

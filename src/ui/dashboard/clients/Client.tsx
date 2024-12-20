@@ -36,6 +36,7 @@ const ErrorMenuItemStyle = {
     transition: "background-color 0.05s",
 }
 
+// @ts-ignore
 export const Client = ({client, index, EditDialogHandler}) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -51,6 +52,7 @@ export const Client = ({client, index, EditDialogHandler}) => {
     const {sendMessage} = useWebSocketContext();
 
     const DisconnectDisplay = (clientId: string) => {
+        setAnchorEl(null);
         const jsonToSend = JSON.stringify({
             type: 'Disconnect',
             targetUser: clientId,
@@ -59,6 +61,7 @@ export const Client = ({client, index, EditDialogHandler}) => {
     }
 
     const RebootDisplay = (clientId: string) => {
+        setAnchorEl(null);
         const jsonToSend = JSON.stringify({
             type: 'RebootDisplay',
             targetUser: clientId,
@@ -67,6 +70,7 @@ export const Client = ({client, index, EditDialogHandler}) => {
     }
 
     const WakeUpDisplay = (NickName: string) => {
+        setAnchorEl(null);
         const jsonToSend = JSON.stringify({
             type: 'StartDisplay',
             targetUser: NickName,
@@ -75,6 +79,7 @@ export const Client = ({client, index, EditDialogHandler}) => {
     }
 
     const unRegisterDisplay = (clientId: string) => {
+        setAnchorEl(null);
         const jsonToSend = JSON.stringify({
             type: 'RemoveRegisteredDisplay',
             targetUser: clientId,
@@ -83,6 +88,7 @@ export const Client = ({client, index, EditDialogHandler}) => {
     }
 
     const RegisterDisplay = (clientId: string) => {
+        setAnchorEl(null);
         const jsonToSend = JSON.stringify({
             type: 'RegisterDisplay',
             targetUser: clientId,

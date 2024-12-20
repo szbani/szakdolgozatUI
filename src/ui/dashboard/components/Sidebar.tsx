@@ -1,6 +1,6 @@
 import {
     AppBar,
-    Drawer, LinearProgress,
+    Drawer, Icon, LinearProgress,
     ListItemButton,
     listItemButtonClasses,
     Toolbar
@@ -8,7 +8,14 @@ import {
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import {CloseRounded, ComputerRounded, LogoutRounded, Person, SettingsRounded} from "@mui/icons-material";
+import {
+    AccountCircle, AvTimer,
+    CloseRounded,
+    ComputerRounded,
+    LogoutRounded,
+    Person, QueryBuilder, Queue,
+    SettingsRounded, Timelapse
+} from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import IconButton from "@mui/material/IconButton";
@@ -28,8 +35,11 @@ export default function ResponsiveDrawer() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
     //@ts-ignore
-    const {registeredDisplays} = useWebSocketContext();
+    const {registeredDisplays, sendMessage, accountInformation} = useWebSocketContext();
 
+    const Logout = () => {
+        sendMessage(JSON.stringify({type: 'Logout'}));
+    }
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -106,6 +116,22 @@ export default function ResponsiveDrawer() {
                         </ListItemButton>
                     </ListItem>
                     <ListItem sx={{paddingX: 0}}>
+                        <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"playlists"}
+                                        selected={currentTab == "playlists" ? true : false}
+                                        onClick={() => setCurrentTab('playlists')}>
+                            <Queue/>
+                            <Typography>Playlists</Typography>
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem sx={{paddingX: 0}}>
+                        <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"Timings"}
+                                        selected={currentTab == "timings" ? true : false}
+                                        onClick={() => setCurrentTab('timings')}>
+                            <Timelapse/>
+                            <Typography>Timings</Typography>
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem sx={{paddingX: 0}}>
                         <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"accounts"}
                                         selected={currentTab == "accounts" ? true : false}
                                         onClick={() => setCurrentTab('accounts')}>
@@ -153,14 +179,12 @@ export default function ResponsiveDrawer() {
             </Box>
             <Divider/>
             <Box sx={{display: 'flex', gap: 1, alignItems: 'center'}}>
-                <Avatar
-                    src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-                />
+                <Avatar/>
                 <Box sx={{minWidth: 0, flex: 1}}>
-                    <Typography>Siriwat K.</Typography>
-                    <Typography>siriwatk@test.com</Typography>
+                    <Typography>{accountInformation.UserName}</Typography>
+                    <Typography>{accountInformation.Email}</Typography>
                 </Box>
-                <IconButton>
+                <IconButton onClick={Logout}>
                     <LogoutRounded/>
                 </IconButton>
             </Box>
@@ -204,7 +228,7 @@ export default function ResponsiveDrawer() {
                     onTransitionEnd={handleDrawerTransitionEnd}
                     onClose={handleDrawerClose}
                     ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
+                        keepMounted: true,
                     }}
                     sx={{
                         display: {xs: 'block', md: 'none'},

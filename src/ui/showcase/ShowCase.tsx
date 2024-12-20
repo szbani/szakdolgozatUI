@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Carousel from "react-material-ui-carousel";
 import {Key, useEffect, useRef, useState} from "react";
 import {loadShowCaseConfig} from "./ShowCaseConfig.ts";
-import {slideShowProps} from "../dashboard/clients/ClientUI.tsx";
+import {slideShowProps} from "../dashboard/client/ClientUI.tsx";
 import {CarouselProps} from "react-material-ui-carousel/dist/components/types";
 
 

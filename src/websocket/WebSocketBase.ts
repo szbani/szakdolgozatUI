@@ -4,6 +4,12 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {SnackbarProps} from "../ui/dashboard/components/Snackbars.tsx";
 
+interface AccountInformation {
+    id: string;
+    UserName: string;
+    Email: string;
+}
+
 export const Websocket = (socketUrl: string) => {
     const [messageHistory, setMessageHistory] = useState([]);
     const [registeredDisplays, setRegisteredDisplays] = useState<string[]>(['']);
@@ -13,7 +19,10 @@ export const Websocket = (socketUrl: string) => {
     const [fileNames, setFileNames] = useState([""]);
     const loggedIn = sessionStorage.getItem('loggedIn');
 
+    const [admins, setAdmins] = useState<string[]>([]);
+
     const [newConfig, setNewConfig] = useState<boolean>(false);
+    const [accountInformation, setAccountInformation] = useState<AccountInformation>('');
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarProps, setSnackbarProps] = useState<SnackbarProps>({
@@ -71,6 +80,11 @@ export const Websocket = (socketUrl: string) => {
             }
 
             switch (parsedMessage.type) {
+                case 'ConnectionAccepted': {
+                    setAccountInformation(JSON.parse(parsedMessage.content));
+                    console.log('Connection accepted');
+                    break;
+                }
                 case 'connectedUsers':
                     setRegisteredDisplays(parsedMessage.registeredDisplays);
                     setUnRegisteredDisplays(parsedMessage.unRegisteredDisplays);
@@ -112,6 +126,16 @@ export const Websocket = (socketUrl: string) => {
                         status: 'success',
                     });
                     break;
+                case "Information":
+                    // console.log('Information:', parsedMessage.content);
+                    setSnackbarOpen(true);
+                    setSnackbarProps({
+                        setOpen: setSnackbarOpen,
+                        open: true,
+                        message: parsedMessage.content,
+                        status: 'info',
+                    });
+                    break;
                 case "ConfigUpdated":
                     setNewConfig(true);
                     setSnackbarOpen(true);
@@ -121,6 +145,13 @@ export const Websocket = (socketUrl: string) => {
                         message: parsedMessage.content,
                         status: 'success',
                     });
+                    break;
+                case "AdminList":
+                    setAdmins(parsedMessage.content);
+                    break;
+                case"Logout":
+                    sessionStorage.removeItem('loggedIn');
+                    navigate('/signin');
                     break;
                 default:
                     console.log('Unknown message type', parsedMessage.type);
@@ -136,8 +167,12 @@ export const Websocket = (socketUrl: string) => {
     const getFilesOfUser = (targetUser: string) => {
         sendMessage(JSON.stringify({type: 'getFilesForUser', targetUser: targetUser}));
     }
+    const getAdminList = () => {
+        sendMessage(JSON.stringify({type: 'getAdminList'}));
+    }
 
     return {
+        accountInformation,
         fileNames,
         readyState,
         messageHistory,
@@ -150,6 +185,8 @@ export const Websocket = (socketUrl: string) => {
         setUploading,
         snackbarProps,
         setNewConfig,
-        newConfig
+        newConfig,
+        getAdminList,
+        admins
     }
 }
