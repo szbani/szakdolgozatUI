@@ -1,0 +1,59 @@
+/** Swiper styles **/
+
+.swiper {
+  user-select: none;
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
+
+  height: 100%;
+
+  padding: 0px 0px;
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.swiper-slide-bg-image {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+.swiper-slide-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  padding: 48px 48px;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.swiper-slide-1990 {
+  border-radius: 32px;
+  --swiper-material-slide-border-radius: 32px;
+}
+
+.swiper-slide-text{
+  color: rgba(255, 255, 255, 1);
+  text-align: left;
+  font-size: 24px;
+  line-height: 1.5;
+  font-weight: bold;
+}

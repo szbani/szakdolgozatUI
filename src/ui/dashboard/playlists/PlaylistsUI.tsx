@@ -9,6 +9,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import {useEffect, useState} from "react";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
 import {Save} from "@mui/icons-material";
+import {Swiper, SwiperSlide} from "swiper/react";
+
+import 'swiper/css';
+import 'swiper/css/zoom';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+
+import {Autoplay, EffectCoverflow, Pagination, Zoom, Navigation, A11y} from 'swiper/modules';
+import MySwiper from "./PlaylistsSwiper.tsx";
 
 interface PlaylistsProps {
     playlist: PlaylistProps;
@@ -45,17 +54,20 @@ const PlaylistsUI = () => {
         setPlaylists(temp);
     }, []);
 
+
+
+
     const CardHandler = (props: PlaylistsProps) => {
         const playlist = props.playlist;
         console.log(playlist.items);
 
-        return <Card>
+        return <Card sx={{my: 2}}>
             <CardHeader
                 title={<CardTitle id={playlist.id} name={playlist.name}/>}
             ></CardHeader>
-            <CardActionArea>{playlist.items.map((item, index) => {
-                return <Typography key={index}>{item}</Typography>
-            })}</CardActionArea>
+            <CardActionArea sx={{p: 2, height:'400px'}}>
+                <MySwiper/>
+            </CardActionArea>
         </Card>;
     }
 
@@ -74,6 +86,7 @@ const PlaylistsUI = () => {
             <IconButton size={'small'} onClick={() => setEdit(true)}><EditIcon/></IconButton>
         </Box>;
     }
+
     return (
         <Box>
             <TextField label={"Search"}></TextField>

@@ -123,14 +123,14 @@ export default function ResponsiveDrawer() {
                             <Typography>Playlists</Typography>
                         </ListItemButton>
                     </ListItem>
-                    <ListItem sx={{paddingX: 0}}>
-                        <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"Timings"}
-                                        selected={currentTab == "timings" ? true : false}
-                                        onClick={() => setCurrentTab('timings')}>
-                            <Timelapse/>
-                            <Typography>Timings</Typography>
-                        </ListItemButton>
-                    </ListItem>
+                    {/*<ListItem sx={{paddingX: 0}}>*/}
+                    {/*    <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"Timings"}*/}
+                    {/*                    selected={currentTab == "timings" ? true : false}*/}
+                    {/*                    onClick={() => setCurrentTab('timings')}>*/}
+                    {/*        <Timelapse/>*/}
+                    {/*        <Typography>Timings</Typography>*/}
+                    {/*    </ListItemButton>*/}
+                    {/*</ListItem>*/}
                     <ListItem sx={{paddingX: 0}}>
                         <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"accounts"}
                                         selected={currentTab == "accounts" ? true : false}
