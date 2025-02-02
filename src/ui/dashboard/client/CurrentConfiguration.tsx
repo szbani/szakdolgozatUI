@@ -1,3 +1,4 @@
+//@ts-nocheck
 import CardHeader from "@mui/material/CardHeader";
 import Typography from "@mui/material/Typography";
 import {CardContent, InputLabel, Select, SelectChangeEvent, Slider} from "@mui/material";
@@ -25,7 +26,7 @@ const CurrentConfiguration = (config: slideShowProps) => {
         setTransitionStyle(config.transitionStyle || 'fade');
         setTransitionDuration(config.transitionDuration || 1);
         setImageInterval(config.interval || 5);
-    },[config]);
+    },[config, config.fileNames]);
 
     const handleImageFitChange = (event: SelectChangeEvent) => {
         setImageFit(event.target.value);
@@ -54,10 +55,12 @@ const CurrentConfiguration = (config: slideShowProps) => {
             transitionStyle: transitionStyle,
             transitionDuration: transitionDuration,
             imageFit: imageFit,
-            imageInterval: imageInterval
+            imageInterval: imageInterval,
+            fileNames: config.fileNames
         });
 
         sendMessage(jsonToSend);
+
     }
 
 
@@ -66,7 +69,7 @@ const CurrentConfiguration = (config: slideShowProps) => {
             title={<Typography
                 fontSize={24}
                 fontWeight={"bold"}>
-                Current Configuration
+                Content Configuration
             </Typography>}
             sx={{padding: 2, paddingLeft: 3, paddingBottom: 0}}
         />

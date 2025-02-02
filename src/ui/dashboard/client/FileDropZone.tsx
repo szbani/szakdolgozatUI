@@ -7,6 +7,9 @@ import {useParams} from "react-router-dom";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
+import {green, grey, red} from "@mui/material/colors";
+import mainTheme from "../../../Themes/MainTheme/MainTheme.ts";
+import {ThemeProvider, useTheme} from "@mui/material";
 
 const thumbsContainer = {
     display: 'flex',
@@ -78,6 +81,7 @@ const rejectStyle = {
 
 
 export const FileDropZone = (props) => {
+    const theme = useTheme();
     const [eSnackbarMessage, seteSnackbarMessage] = useState("");
     const [eSnackbarOpen, seteSnackbarOpen] = useState(false);
     //todo implement colors
@@ -126,11 +130,12 @@ export const FileDropZone = (props) => {
         setFiles([]);
     }, [fileNames]);
 
-    const handleUpload = () => {
+    const handleUpload = (replace:boolean) => {
         const jsonToSend = JSON.stringify({
             type: 'startingFileStream',
             targetUser: clientId,
-            deleteFiles: true,
+            isPlaylist: props.isPlaylist,
+            deleteFiles: replace,
             mediaType: props.acceptedFileType
         });
         sendMessage(jsonToSend);
@@ -145,6 +150,7 @@ export const FileDropZone = (props) => {
             const jsonToSend = JSON.stringify({
                 type: 'startFileStream',
                 fileName: filesToUpload[0].name,
+                isPlaylist: props.isPlaylist,
             });
             sendMessage(jsonToSend);
 
@@ -183,10 +189,15 @@ export const FileDropZone = (props) => {
         }
         if (uploading && filesToUpload.length == 0) {
             const jsonToSend = JSON.stringify({
-                type: 'sendUpdateRequestToUser',
+                type: 'createImagePathConfig',
                 targetUser: clientId
             });
             sendMessage(jsonToSend);
+            const jsonToSend2 = JSON.stringify({
+                type: 'sendUpdateRequestToUser',
+                targetUser: clientId
+            });
+            sendMessage(jsonToSend2);
             getFilesOfUser(clientId);
         }
         setUploading(false);
@@ -242,7 +253,11 @@ export const FileDropZone = (props) => {
         ...baseStyle,
         ...(isFocused ? focusedStyle : {}),
         ...(isDragAccept ? acceptStyle : {}),
-        ...(isDragReject ? rejectStyle : {})
+        ...(isDragReject ? rejectStyle : {}),
+        backgroundColor: isDragReject ? red[200] : isDragAccept ? green[200]
+            : theme.palette.mode == 'light' ? grey[200] : grey[800],
+        color: theme.palette.mode == 'light' ? grey[800] : grey[200],
+        borderColor: theme.palette.mode == 'light' ? grey[400] : grey[600],
     }), [
         isFocused,
         isDragAccept,
@@ -259,7 +274,7 @@ export const FileDropZone = (props) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         width: '100%',
-                        height: '100%'
+                        height: '100%',
                     }} {...getRootProps({style})}>
                         <input {...getInputProps()} />
                         {props.acceptedFileType == "video" ?
@@ -275,28 +290,24 @@ export const FileDropZone = (props) => {
                     </Grid>
                     <Grid minHeight={50} size={12}>
                         {files.length > 0 ?
-                            <Button
-                                disabled={uploading}
-                                fullWidth={true}
-                                onClick={handleUpload}
-                                sx={(theme) => ({
-                                    "borderRadius": "12px",
-                                    "backgroundColor": theme.palette.mode == 'light' ?
-                                        "#1B6B51" :
-                                        "#8BD6B6",
-                                    "color": theme.palette.mode == 'light' ?
-                                        "#FFFFFF" :
-                                        "#303633",
-                                    "&:hover": {
-                                        "backgroundColor": theme.palette.mode == 'light' ?
-                                            "#4C6358" :
-                                            "#B3CCBF",
-                                    }
-                                })
-                            }
-                            >
-                                {uploading ? "Uploading" : "Upload"}
-                            </Button>
+                            <>
+                                <Button
+                                    disabled={uploading}
+                                    onClick={() => handleUpload(true)}
+                                    sx={{marginRight: 1}}
+                                >
+                                    {uploading ? "Uploading " : "Replace Existing Files"}
+                                </Button>
+                                {props.acceptedFileType == "image" ?
+                                    <Button
+                                        disabled={uploading}
+                                        onClick={() => handleUpload(false)}
+                                        sx={{marginRight: 1}}
+                                    >
+                                        {uploading ? "Uploading " : "Upload To Existing Files"}
+                                    </Button> : null
+                                }
+                            </>
                             : null}
                     </Grid>
                 </Grid>

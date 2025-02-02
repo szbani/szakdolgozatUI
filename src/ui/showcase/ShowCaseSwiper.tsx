@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {Swiper, SwiperSlide} from "swiper/react";
 import {A11y, Autoplay, Parallax, Keyboard} from "swiper/modules";
 import {Key, useEffect, useState} from "react";
@@ -68,7 +69,7 @@ const ShowCaseSwiper = (props: slideShowProps) => {
                     <img
                         className={slideStyle}
                         style={{objectFit: props.objectFit}}
-                        src={`/${props.clientId}/${fileName}`}
+                        src={`/displays/${props.clientId}/${fileName}`}
                         alt={`Slide ${index}`}
                     />
                     {/*<Box className="swiper-slide-content">*/}

@@ -28,7 +28,7 @@ const MediaPlayer = ({username, fileName}) => {
 
     return (
         <video ref={videoRef} muted controls autoPlay loop style={{width: windowSize.width, height: windowSize.height}}>
-            <source src={`/${username}/${fileName}`} type="video/mp4"/>
+            <source src={`displays/${username}/${fileName}`} type="video/mp4"/>
         </video>
     )
 }
@@ -80,7 +80,7 @@ const ShowCase = () => {
                 if (config?.mediaType === "image") {
                     setSlideShowConfig({
                         clientId: userId,
-                        fileNames: socket.fileNames as string[],
+                        fileNames: config?.imagePaths,
                         transitionStyle: config?.transitionStyle,
                         transitionDuration: config?.transitionDuration,
                         interval: config?.imageInterval,

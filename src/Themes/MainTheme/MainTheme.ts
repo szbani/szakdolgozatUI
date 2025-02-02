@@ -81,30 +81,58 @@ export const MainTheme = createTheme({
             "fontWeight": 300,
         },
     },
-    "components": {
-        "MuiLink": {
-            "styleOverrides": {
-                "root": ({ theme }) => ({
+    components: {
+        MuiLink: {
+            styleOverrides: {
+                root: ({ theme }) => ({
                     "&:hover": {
-                        "backgroundColor": theme.palette.mode == 'light' ?
+                        backgroundColor: theme.palette.mode == 'light' ?
                             'rgba(0,0,0,0.05)' :
                             'rgba(255,255,255,0.1)',
-                        "borderRadius": "12px"
+                        borderRadius: "12px"
                     },
-                    "transition": "background-color 0.2s",
-                    "borderRadius": "12px"
+                    transition: "background-color 0.2s",
+                    borderRadius: "12px"
                 }),
             }
         },
-        "MuiCard": {
-            "styleOverrides": {
-                "root": {
-                    "borderRadius": "12px",
-                    "boxShadow": "0px 4px 4px rgba(0, 0, 0, 0.25)"
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    borderRadius: "12px",
+                    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
                 }
+            }
+        },
+        MuiButton: {
+            styleOverrides: {
+                root: ({ theme }) => ( {
+                    borderRadius: "12px",
+                    padding: "6px 16px",
+                    backgroundColor: theme.palette.mode == 'light' ?
+                        "#3daa82" :
+                        '#8BD6B6',
+                    color: theme.palette.mode == 'light' ?
+                        "#FFFFFF" :
+                        '#303633',
+                    "&:hover": {
+                        backgroundColor: theme.palette.mode == 'light' ?
+                            "#2b8a67" :
+                            '#6e9b8b',
+                    },
+                    "&:active": {
+                        backgroundColor: theme.palette.mode == 'light' ?
+                            "#1b6b51" :
+                            '#4c6358',
+                    },
+                    "&:focus": {
+                        backgroundColor: theme.palette.mode == 'light' ?
+                            "#1b6b51" :
+                            '#4c6358',
+                    },
+                }),
             }
         }
     },
 });
-
 export default MainTheme;

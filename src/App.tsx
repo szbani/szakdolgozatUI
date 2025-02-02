@@ -12,6 +12,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import AccountTable from "./ui/dashboard/Accounts/AccountTable.tsx";
 import PlaylistsLayout from "./ui/dashboard/Layouts/PlaylistsLayout.tsx";
 import PlaylistsUI from "./ui/dashboard/playlists/PlaylistsUI.tsx";
+import PlaylistUI from "./ui/dashboard/Playlist/PlaylistUI.tsx";
 
 
 const App = () => {
@@ -31,7 +32,7 @@ const App = () => {
                         <Route path={"accounts"} element={<AccountTable/>}/>
                         <Route path="playlists" element={<PlaylistsLayout/>}>
                             <Route index element={<PlaylistsUI/>}/>
-                            <Route path={":playlistId"}/>
+                            <Route path={":clientId"} element={<PlaylistUI/>}/>
                         </Route>
                     </Route>
                     <Route path="showcase" element={<ShowCase/>}></Route>

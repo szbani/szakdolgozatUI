@@ -1,6 +1,6 @@
 import {
     AppBar,
-    Drawer, Icon, LinearProgress,
+    Drawer,  LinearProgress,
     ListItemButton,
     listItemButtonClasses,
     Toolbar
@@ -9,12 +9,11 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import {
-    AccountCircle, AvTimer,
     CloseRounded,
     ComputerRounded,
     LogoutRounded,
-    Person, QueryBuilder, Queue,
-    SettingsRounded, Timelapse
+    Person, Queue,
+    SettingsRounded,
 } from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -140,25 +139,31 @@ export default function ResponsiveDrawer() {
                         </ListItemButton>
                     </ListItem>
                 </List>
-                <List
+                {/*<List*/}
+                {/*    sx={{*/}
+                {/*        mt: 'auto',*/}
+                {/*        flexGrow: 0,*/}
+                {/*        // '--ListItem-radius': (theme) => theme.cssVariables.radius.sm,*/}
+                {/*        '--List-gap': '8px',*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*/!*    <ListItem sx={{paddingX: 0}}>*!/*/}
+                {/*/!*        <ListItemButton sx={{borderRadius: 3}}>*!/*/}
+                {/*/!*            <SettingsRounded/>*!/*/}
+                {/*/!*            Settings*!/*/}
+                {/*/!*        </ListItemButton>*!/*/}
+                {/*/!*    </ListItem>*!/*/}
+                {/*</List>*/}
+                <Card
+                    // variant="soft"
+                    color="neutral"
                     sx={{
+                        boxShadow: 'none',
                         mt: 'auto',
                         flexGrow: 0,
                         // '--ListItem-radius': (theme) => theme.cssVariables.radius.sm,
                         '--List-gap': '8px',
                     }}
-                >
-                    <ListItem sx={{paddingX: 0}}>
-                        <ListItemButton sx={{borderRadius: 3}}>
-                            <SettingsRounded/>
-                            Settings
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                <Card
-                    // variant="soft"
-                    color="neutral"
-                    sx={{boxShadow: 'none'}}
                 >
                     <Stack
                         direction="row"
