@@ -6,7 +6,8 @@ interface ShowCaseConfig {
     transitionDuration: number,
     imageInterval: number,
     imageFit: string,
-    imagePaths: string[],
+    paths: string[],
+    changeTimes: string[],
 }
 
 interface PlaylistConfig {

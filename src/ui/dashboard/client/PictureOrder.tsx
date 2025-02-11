@@ -24,6 +24,7 @@ import {
 import {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
+import Typography from "@mui/material/Typography";
 
 const SortableItem = (props) => {
     const {
@@ -42,7 +43,7 @@ const SortableItem = (props) => {
     };
 
     return (
-        <img src={`/displays/${props.clientId}/${props.fileName}`} id={props.fileName} ref={setNodeRef}
+        <img src={`/displays/${props.clientId}/${props.changeTime}/${props.fileName}`} id={props.fileName} ref={setNodeRef}
              style={style} {...attributes} {...listeners}/>
     );
 }
@@ -88,9 +89,10 @@ const PictureOrder = (props: slideShowProps) => {
         const jsonToSend = {
             type: 'modifyImageOrder',
             targetUser: props.clientId,
-            isPlaylist: false,
-            fileNames: fileOrder
+            fileNames: fileOrder,
+            changeTime: props.changeTime,
         }
+        // console.log('Sending:', jsonToSend);
         sendMessage(JSON.stringify(jsonToSend));
     }
 
@@ -98,6 +100,7 @@ const PictureOrder = (props: slideShowProps) => {
         <Card sx={{marginBottom: 4}}>
             <CardHeader title={'Change Image Order'}></CardHeader>
             <CardContent sx={{display: "flex", overflow: "scroll"}}>
+                { fileOrder.length === 0 && <Typography margin={5} fontSize={20}>No images to display</Typography>}
                 <DndContext
                     modifiers={[restrictToHorizontalAxis]}
                     sensors={sensors}
@@ -111,19 +114,19 @@ const PictureOrder = (props: slideShowProps) => {
                         id={'image-list'}
                     >
                         {fileOrder.map((fileName) => {
-                            return <SortableItem clientId={props.clientId} fileName={fileName}></SortableItem>
+                            return <SortableItem clientId={props.clientId} fileName={fileName} changeTime={props.changeTime}></SortableItem>
                         })}
                     </SortableContext>
                     <DragOverlay>
                         {activeId ? (
                             <Box>
-                                <img src={`/displays/${props.clientId}/${activeId}`} style={{height: 150}}/>
+                                <img src={`/displays/${props.clientId}/${props.changeTime}/${activeId}`} style={{height: 150}}/>
                             </Box>
                         ) : null}
                     </DragOverlay>
                 </DndContext>
             </CardContent>
-            <CardActions><Button onClick={handleOrderChange}>Change Order</Button></CardActions>
+            <CardActions><Button onClick={handleOrderChange} disabled={fileOrder.length === 0}>Change Order</Button></CardActions>
         </Card>
     );
 }

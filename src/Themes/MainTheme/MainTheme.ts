@@ -22,7 +22,7 @@ export const MainTheme = createTheme({
                     "primary": "#000000",
                     "secondary": "#4C6358",
                 },
-                "error":{
+                "error": {
                     "main": "#ba1a1a",
                     "light": "#ffdad6",
                     "dark": "#410002",
@@ -84,7 +84,7 @@ export const MainTheme = createTheme({
     components: {
         MuiLink: {
             styleOverrides: {
-                root: ({ theme }) => ({
+                root: ({theme}) => ({
                     "&:hover": {
                         backgroundColor: theme.palette.mode == 'light' ?
                             'rgba(0,0,0,0.05)' :
@@ -98,15 +98,18 @@ export const MainTheme = createTheme({
         },
         MuiCard: {
             styleOverrides: {
-                root: {
+                root: ({theme}) => ({
+                    backgroundColor: theme.palette.mode == "light" ?
+                        "#eff5f0" :
+                        "#2b2f2c",
                     borderRadius: "12px",
                     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
-                }
+                }),
             }
         },
         MuiButton: {
             styleOverrides: {
-                root: ({ theme }) => ( {
+                root: ({theme}) => ({
                     borderRadius: "12px",
                     padding: "6px 16px",
                     backgroundColor: theme.palette.mode == 'light' ?
@@ -125,11 +128,14 @@ export const MainTheme = createTheme({
                             "#1b6b51" :
                             '#4c6358',
                     },
-                    "&:focus": {
+                    "&:disabled": {
                         backgroundColor: theme.palette.mode == 'light' ?
-                            "#1b6b51" :
-                            '#4c6358',
-                    },
+                            "#c5e4d8" :
+                            '#c3d8cd',
+                        color: theme.palette.mode == 'light' ?
+                            "#FFFFFF" :
+                            '#555e5a',
+                    }
                 }),
             }
         }

@@ -1,10 +1,8 @@
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
 import Button from "@mui/material/Button";
 import {Backdrop, CardActions, Fade, Modal, StepButton, Tab, tabClasses} from "@mui/material";
-import Typography from "@mui/material/Typography";
 import {SyntheticEvent, useState} from "react";
 import {FileDropZone} from "../client/FileDropZone.tsx";
 import {TabContext, TabList, TabPanel} from "@mui/lab";
@@ -57,7 +55,8 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
     };
 
     const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        if (activeStep === 0) handleClose();
+        else setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
     const [open, setOpen] = useState(false);
@@ -146,22 +145,26 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
                                             </Tab>
                                         </TabList>
                                         <TabPanel value={0}><FileDropZone acceptedFileType={'image'}
-                                                                          isPlaylist={false}/></TabPanel>
+                                                                          isPlaylist={false}
+                                                                          changeTime={props.changeTime}
+                                        /></TabPanel>
                                         <TabPanel value={1}><FileDropZone acceptedFileType={'video'}
-                                                                          isPlaylist={false}/></TabPanel>
+                                                                          isPlaylist={false}
+                                                                          changeTime={props.changeTime}
+                                        /></TabPanel>
                                     </TabContext></Card>
                                 : <PictureOrder {...props}></PictureOrder>
                             }
                         </Box>
                         <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                            <Box sx={{flex: '1 1 auto'}}/>
                             <Button
                                 onClick={handleBack}
                             >
-                                Back
+                                {activeStep === 0 ? 'Exit' : 'Back'}
                             </Button>
-                            <Box sx={{flex: '1 1 auto'}}/>
-                            <Button onClick={handleNext}>
-                                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                            <Button onClick={handleNext} sx={{ml:2}}>
+                                {activeStep === steps.length - 1 ? 'Exit' : 'Next'}
                             </Button>
                         </Box>
 

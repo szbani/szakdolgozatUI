@@ -13,7 +13,6 @@ import {
     ComputerRounded,
     LogoutRounded,
     Person, Queue,
-    SettingsRounded,
 } from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";

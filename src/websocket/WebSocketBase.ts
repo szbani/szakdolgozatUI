@@ -176,9 +176,7 @@ export const Websocket = (socketUrl: string) => {
         const jsonToSend = JSON.stringify({type: 'getConnectedUsers'});
         sendMessage(jsonToSend);
     }
-    const getFilesOfUser = (targetUser: string) => {
-        sendMessage(JSON.stringify({type: 'getFilesForUser', targetUser: targetUser}));
-    }
+
     const getAdminList = () => {
         sendMessage(JSON.stringify({type: 'getAdminList'}));
     }
@@ -188,7 +186,6 @@ export const Websocket = (socketUrl: string) => {
         fileNames,
         readyState,
         messageHistory,
-        getFilesOfUser,
         getConnectedUsers,
         registeredDisplays,
         unRegisteredDisplays,

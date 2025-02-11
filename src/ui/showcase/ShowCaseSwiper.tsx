@@ -19,6 +19,7 @@ const ShowCaseSwiper = (props: slideShowProps) => {
     const [slideStyle, setSlideStyle] = useState("swiper-slide-bg-image");
     const [swiperKey, setSwiperKey] = useState(0);
 
+
     const getSwiperParameters = () => {
         let effect = "slide";
         let parallax = { enabled: false };
@@ -69,7 +70,7 @@ const ShowCaseSwiper = (props: slideShowProps) => {
                     <img
                         className={slideStyle}
                         style={{objectFit: props.objectFit}}
-                        src={`/displays/${props.clientId}/${fileName}`}
+                        src={`/displays/${props.clientId}/${props.changeTime}/${fileName}`}
                         alt={`Slide ${index}`}
                     />
                     {/*<Box className="swiper-slide-content">*/}

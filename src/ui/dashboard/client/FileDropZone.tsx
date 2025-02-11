@@ -8,8 +8,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import {green, grey, red} from "@mui/material/colors";
-import mainTheme from "../../../Themes/MainTheme/MainTheme.ts";
-import {ThemeProvider, useTheme} from "@mui/material";
+import {useTheme} from "@mui/material";
 
 const thumbsContainer = {
     display: 'flex',
@@ -84,11 +83,10 @@ export const FileDropZone = (props) => {
     const theme = useTheme();
     const [eSnackbarMessage, seteSnackbarMessage] = useState("");
     const [eSnackbarOpen, seteSnackbarOpen] = useState(false);
-    //todo implement colors
     const [eSnackbarStatus, seteSnackbarStatus] = useState<string>("neutral");
 
     // @ts-ignore
-    const {sendMessage, uploading, setUploading, getFilesOfUser, fileNames} = useWebSocketContext();
+    const {sendMessage, uploading, setUploading, fileNames, setNewConfig} = useWebSocketContext();
     const {clientId} = useParams();
     const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
 
@@ -130,13 +128,12 @@ export const FileDropZone = (props) => {
         setFiles([]);
     }, [fileNames]);
 
-    const handleUpload = (replace:boolean) => {
+    const handleUpload = () => {
         const jsonToSend = JSON.stringify({
-            type: 'startingFileStream',
+            type: 'prepareFileStream',
             targetUser: clientId,
-            isPlaylist: props.isPlaylist,
-            deleteFiles: replace,
-            mediaType: props.acceptedFileType
+            mediaType: props.acceptedFileType,
+            changeTime: props.changeTime
         });
         sendMessage(jsonToSend);
         setFilesToUpload(files);
@@ -150,7 +147,7 @@ export const FileDropZone = (props) => {
             const jsonToSend = JSON.stringify({
                 type: 'startFileStream',
                 fileName: filesToUpload[0].name,
-                isPlaylist: props.isPlaylist,
+                changeTime: props.changeTime
             });
             sendMessage(jsonToSend);
 
@@ -190,7 +187,8 @@ export const FileDropZone = (props) => {
         if (uploading && filesToUpload.length == 0) {
             const jsonToSend = JSON.stringify({
                 type: 'createImagePathConfig',
-                targetUser: clientId
+                targetUser: clientId,
+                changeTime: props.changeTime
             });
             sendMessage(jsonToSend);
             const jsonToSend2 = JSON.stringify({
@@ -198,7 +196,7 @@ export const FileDropZone = (props) => {
                 targetUser: clientId
             });
             sendMessage(jsonToSend2);
-            getFilesOfUser(clientId);
+            setNewConfig(true);
         }
         setUploading(false);
     }, [uploading]);
@@ -291,21 +289,21 @@ export const FileDropZone = (props) => {
                     <Grid minHeight={50} size={12}>
                         {files.length > 0 ?
                             <>
-                                <Button
-                                    disabled={uploading}
-                                    onClick={() => handleUpload(true)}
-                                    sx={{marginRight: 1}}
-                                >
-                                    {uploading ? "Uploading " : "Replace Existing Files"}
-                                </Button>
                                 {props.acceptedFileType == "image" ?
                                     <Button
                                         disabled={uploading}
-                                        onClick={() => handleUpload(false)}
+                                        onClick={() => handleUpload()}
                                         sx={{marginRight: 1}}
                                     >
                                         {uploading ? "Uploading " : "Upload To Existing Files"}
-                                    </Button> : null
+                                    </Button> :
+                                    <Button
+                                        disabled={uploading}
+                                        onClick={() => handleUpload()}
+                                        sx={{marginRight: 1}}
+                                    >
+                                        {uploading ? "Uploading " : "Replace Existing Files"}
+                                    </Button>
                                 }
                             </>
                             : null}

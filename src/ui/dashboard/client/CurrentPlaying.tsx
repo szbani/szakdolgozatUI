@@ -31,7 +31,7 @@ const CurrentPlaying = ( slideShowConfig?:slideShowProps) => {
         />
         <CardContent sx={{height: {xs: 320, md: 470, lg: 380}}}>
             {
-                slideShowConfig?.fileNames.length == 0 ?
+                slideShowConfig?.fileNames && slideShowConfig?.fileNames.length == 0 ?
                     <p>No content currently shown.</p> :
                     slideShowConfig.mediaType == 'image' ?
                         <ShowCaseSwiper {...slideShowConfig} fileNames={slideShowConfig?.fileNames}/>
@@ -39,7 +39,7 @@ const CurrentPlaying = ( slideShowConfig?:slideShowProps) => {
                             return (
                                 <video key={index} ref={videoRef} muted controls autoPlay loop
                                        style={{objectFit: "contain", width: "100%", height:"100%"}}>
-                                    <source src={`/displays/${slideShowConfig.clientId}/${fileName}`} type="video/mp4"/>
+                                    <source src={`/displays/${slideShowConfig.clientId}/${slideShowConfig?.changeTime}/${fileName}`} type="video/mp4"/>
                                 </video>
                             )
                         }) : <p>Unknown media type</p>

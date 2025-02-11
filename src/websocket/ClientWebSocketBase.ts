@@ -60,14 +60,6 @@ export const ClientWebSocket = () => {
             }
 
             switch (parsedMessage.type) {
-                case 'filesForUser':
-                    setFileNames(parsedMessage.content);
-                    console.log('Received files:', parsedMessage.content);
-                    break;
-                case "updateRequest":
-                    console.log('Received update request');
-                    getFileForUser();
-                    break;
                 case 'messageFromUser':
                     setUserMessages((prev) => prev.concat({
                         message: parsedMessage.message,
@@ -87,9 +79,9 @@ export const ClientWebSocket = () => {
         }
     }, [lastMessage]);
 
-    const getFileForUser = () => {
-        sendMessage(JSON.stringify({type: 'getFilesForUser', targetUser: username}));
-    }
+    // const getFileForUser = () => {
+    //     sendMessage(JSON.stringify({type: 'getFilesForUser', targetUser: username}));
+    // }
 
 
     return {
@@ -99,7 +91,6 @@ export const ClientWebSocket = () => {
         messageHistory,
         userMessages,
         username,
-        getFileForUser,
         fileNames,
         setNewConfig,
         newConfig
