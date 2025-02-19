@@ -60,10 +60,14 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
 
 const AccountTable = () => {
     // @ts-ignore
-    const {sendMessage, admins, getAdminList} = useWebSocketContext();
+    const {sendMessage, admins, getAdminList, setAdmins} = useWebSocketContext();
 
     const [rows, setRows] = useState( []);
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+
+    useEffect(() => {
+        getAdminList();
+    },[]);
 
     useEffect(() => {
         if (admins.length > 0) {
@@ -79,7 +83,6 @@ const AccountTable = () => {
             });
             setRows(res);
         }
-
     }, [admins]);
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
@@ -107,7 +110,6 @@ const AccountTable = () => {
             return;
         }
         sendMessage(JSON.stringify({type: "DeleteAdmin", id: id, sender: "admin"}));
-
         setRows(rows.filter((row) => row.id !== id));
     };
 

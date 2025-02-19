@@ -138,7 +138,7 @@ export const MainTheme = createTheme({
                     }
                 }),
             }
-        }
+        },
     },
 });
 export default MainTheme;

@@ -23,7 +23,7 @@ const CurrentConfiguration = (config: slideShowProps) => {
     useEffect(() => {
         setMediaType(config.mediaType);
         setImageFit(config.objectFit || 'fill');
-        setTransitionStyle(config.transitionStyle || 'fade');
+        setTransitionStyle(config.transitionStyle || 'slide');
         setTransitionDuration(config.transitionDuration || 1);
         setImageInterval(config.interval || 5);
     },[config, config.fileNames]);
@@ -72,6 +72,7 @@ const CurrentConfiguration = (config: slideShowProps) => {
                 Content Configuration
             </Typography>}
             sx={{padding: 2, paddingLeft: 3, paddingBottom: 0}}
+            subheader={"Configure how the Images are displayed."}
         />
         <CardContent
             sx={{padding: 2, paddingLeft: 3}}

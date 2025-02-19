@@ -19,6 +19,7 @@ const ShowCaseSwiper = (props: slideShowProps) => {
     const [slideStyle, setSlideStyle] = useState("swiper-slide-bg-image");
     const [swiperKey, setSwiperKey] = useState(0);
 
+    const changeTimeString = props.changeTime === "default" ? "default" : props.changeTime.replace(":", "_");
 
     const getSwiperParameters = () => {
         let effect = "slide";
@@ -57,7 +58,13 @@ const ShowCaseSwiper = (props: slideShowProps) => {
 
         // Trigger Swiper re-render with a new key
         setSwiperKey((prevKey) => prevKey + 1);
+        console.log('update')
     }, [props.transitionStyle]);
+
+    useEffect(() => {
+        setSwiperKey((prevKey) => prevKey + 1);
+        console.log('update')
+    }, [props.fileNames]);
 
     return (
         <Swiper
@@ -70,7 +77,7 @@ const ShowCaseSwiper = (props: slideShowProps) => {
                     <img
                         className={slideStyle}
                         style={{objectFit: props.objectFit}}
-                        src={`/displays/${props.clientId}/${props.changeTime}/${fileName}`}
+                        src={`/displays/${props.clientId}/${changeTimeString}/${fileName}`}
                         alt={`Slide ${index}`}
                     />
                     {/*<Box className="swiper-slide-content">*/}

@@ -43,7 +43,7 @@ const SortableItem = (props) => {
     };
 
     return (
-        <img src={`/displays/${props.clientId}/${props.changeTime}/${props.fileName}`} id={props.fileName} ref={setNodeRef}
+        <img src={`/displays/${props.clientId}/${props.changeTime.replace(":","_")}/${props.fileName}`} id={props.fileName} ref={setNodeRef}
              style={style} {...attributes} {...listeners}/>
     );
 }
@@ -117,13 +117,13 @@ const PictureOrder = (props: slideShowProps) => {
                             return <SortableItem clientId={props.clientId} fileName={fileName} changeTime={props.changeTime}></SortableItem>
                         })}
                     </SortableContext>
-                    <DragOverlay>
-                        {activeId ? (
-                            <Box>
-                                <img src={`/displays/${props.clientId}/${props.changeTime}/${activeId}`} style={{height: 150}}/>
-                            </Box>
-                        ) : null}
-                    </DragOverlay>
+                    {/*<DragOverlay>*/}
+                    {/*    {activeId ? (*/}
+                    {/*        <Box>*/}
+                    {/*            <img src={`/displays/${props.clientId}/${props.changeTime}/${activeId}`} style={{height: 150}}/>*/}
+                    {/*        </Box>*/}
+                    {/*    ) : null}*/}
+                    {/*</DragOverlay>*/}
                 </DndContext>
             </CardContent>
             <CardActions><Button onClick={handleOrderChange} disabled={fileOrder.length === 0}>Change Order</Button></CardActions>

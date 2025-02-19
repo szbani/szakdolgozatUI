@@ -191,6 +191,7 @@ export const Websocket = (socketUrl: string) => {
         unRegisteredDisplays,
         sendMessage,
         uploading,
+        setAdmins,
         setUploading,
         snackbarProps,
         setNewConfig,

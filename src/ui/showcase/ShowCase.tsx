@@ -1,7 +1,7 @@
 import {ClientWebSocket} from "../../websocket/ClientWebSocketBase.ts";
 import Box from "@mui/material/Box";
 import {useEffect, useRef, useState} from "react";
-import {loadShowCaseConfig} from "./ShowCaseConfig.ts";
+import {loadShowCaseConfig} from "../dashboard/components/ConfigLoader.ts";
 import {slideShowProps} from "../dashboard/client/ClientUI.tsx";
 import ShowCaseSwiper from "./ShowCaseSwiper.tsx";
 
@@ -55,11 +55,13 @@ const ShowCase = () => {
             // console.log('diff:', diff);
             // console.log('changeTime:', changeTime);
             now = new Date();
+            console.log("Change:", changeTime.getHours());
+            console.log("Time till change:", diff);
             if (diff <= 0) {
                 clearInterval(countDown);
                 loadConfig(socket.username);
             }
-        }, 10000);
+        }, 5000);
     }
 
 
@@ -131,7 +133,6 @@ const ShowCase = () => {
                                         nextPlanedChangeEndTime.setHours(endhour, endminute, 0, 0);
 
                                         if (now.getHours() < nextPlanedChangeTime.getHours() || (now.getHours() === nextPlanedChangeTime.getHours() && now.getMinutes() < nextPlanedChangeTime.getMinutes())) {
-                                            // changeTime = nextPlanedChangeTime;
                                             recurzive(currentI);
                                         } else {
                                             // @ts-ignore
@@ -147,6 +148,31 @@ const ShowCase = () => {
                             }
                         }
                         recurzive(i)
+                    }
+                }
+                if (fileNamesTime == "default" && config.changeTimes.length > 0) {
+                    for (let i = 0; i < config.changeTimes.length; i++) {
+                        const hour = config.changeTimes[i].split(":").map(Number)[0];
+                        const minute = config.changeTimes[i].split(":").map(Number)[1];
+
+                        const startTime = new Date();
+                        startTime.setHours(hour, minute, 0, 0);
+
+                        if (now.getHours() < startTime.getHours() || (now.getHours() === startTime.getHours() && now.getMinutes() < startTime.getMinutes())) {
+                            const current = config.changeTimes[i];
+                            // @ts-ignore
+                            const endHour = config?.[current].endTime.split(":").map(Number)[0];
+                            // @ts-ignore
+                            const endMinute = config?.[current].endTime.split(":").map(Number)[1];
+                            const endTime = new Date();
+                            endTime.setHours(endHour, endMinute, 0, 0);
+                            fileNamesTime = config.changeTimes[i];
+                            // @ts-ignore
+                            changeTime = endTime;
+                            console.log('changeTime:', changeTime);
+                            startCountDownTillChange();
+                            break;
+                        }
                     }
                 }
                 // @ts-ignore

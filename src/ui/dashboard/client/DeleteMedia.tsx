@@ -1,0 +1,167 @@
+//@ts-nocheck
+import Box from "@mui/material/Box";
+import {useEffect, useState} from "react";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid2";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import Button from "@mui/material/Button";
+import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
+
+const BoxItem = ({clientId,item,changeTime, active, onClick}) => {
+
+    return (
+        <Grid
+            border={active ? 2 : 1}
+            borderColor={active ? "#05e195" : "black"}
+            size={4}
+            height={125}
+            textAlign={"center"}
+            sx={{backgroundColor: active ? "wheat" : "lightgray", cursor: "pointer"}}
+            onClick={onClick}
+            display={"inherit"}
+        >
+            {
+                item.includes(".mp4") ?
+                <video src={`/displays/${clientId}/${changeTime}/${item}`} height={"100%"} width={"100%"} controls/> :
+                <img src={`/displays/${clientId}/${changeTime}/${item}`} height={"100%"} width={"100%"}/>
+            }
+        </Grid>
+    )
+}
+
+
+const MediaBox = ({clientId, active, changeTime, setActive, items, setItems, del = 0}) => {
+    // @ts-ignore
+    const {sendMessage} = useWebSocketContext();
+
+    let changeTimeDir = changeTime;
+    if (changeTimeDir != "default") {
+        changeTimeDir = changeTime.replace(":", "_");
+    }
+
+    const HandleDelete = () => {
+        const jsonToSend = JSON.stringify({
+            "type": "deleteMedia",
+            "targetUser": clientId,
+            "changeTime": changeTime,
+            "fileNames": items
+        });
+        // console.log(jsonToSend);
+        setItems([]);
+        sendMessage(jsonToSend);
+    }
+
+    const setItemActive = (index) => {
+        if (active.includes(index)) {
+            setActive(active.filter((item) => item !== index));
+        } else {
+            setActive([...active, index]);
+        }
+    }
+
+
+    const DeleteTitle = () => {
+        return (
+            <Box display={"flex"}>
+                <Typography fontSize={"1.5rem"}>Content To Delete</Typography>
+                <Button sx={{marginLeft:"auto"}} onClick={HandleDelete}>Delete Items</Button>
+            </Box>
+        )
+    }
+
+    return (
+        <Card sx={{width: "45%", height: 550}}>
+            <CardHeader title={del == 0 ? "Content To Remain" : DeleteTitle()} sx={{height: "15%"}}></CardHeader>
+            <CardContent sx={{height: "85%", overflow: "scroll"}}>
+                <Grid container spacing={1}>
+                    {items.map((item, index) => {
+                        return (
+                            <BoxItem changeTime={changeTimeDir} clientId={clientId} key={index} item={item} onClick={() => setItemActive(index)}
+                                     active={active.includes(index)}></BoxItem>
+                        )
+                    })}
+                </Grid>
+            </CardContent>
+        </Card>
+    )
+}
+
+const DeleteMedia = ({fileNames, changeTime, clientId}) => {
+    const [currentItems, setCurrentItems] = useState(fileNames);
+    const [deleteItems, setDeleteItems] = useState([]);
+    const [currentActive, setCurrentActive] = useState<number[]>([]);
+    const [deleteActive, setDeleteActive] = useState<number[]>([]);
+
+
+
+    useEffect(() => {
+        if (deleteActive.length > 0 && currentActive.length > 0) {
+            setDeleteActive([]);
+        }
+    }, [currentActive]);
+
+    useEffect(() => {
+        if (currentActive.length > 0 && deleteActive.length > 0) {
+            setCurrentActive([]);
+        }
+    }, [deleteActive]);
+
+    useEffect(() => {
+        setCurrentItems(currentItems.sort());
+        setDeleteItems(deleteItems.sort());
+    }, [currentItems != currentItems.sort(), deleteItems != deleteItems.sort()]);
+
+
+    const MoveItems = (destination, all) => {
+        if (destination == "current") {
+            if (all) {
+                setCurrentItems([...currentItems, ...deleteItems]);
+                setDeleteItems([]);
+                // setRightItems(currentItems.sort());
+            } else {
+                setCurrentItems([...currentItems, ...deleteItems.filter((item, index) => deleteActive.includes(index))]);
+                setDeleteItems(deleteItems.filter((item, index) => !deleteActive.includes(index)));
+                // setRightItems(currentItems.sort());
+            }
+        } else {
+            if (all) {
+                setDeleteItems([...deleteItems, ...currentItems]);
+                setCurrentItems([]);
+                // setLeftItems(deleteItems.sort());
+            } else {
+                setDeleteItems([...deleteItems, ...currentItems.filter((item, index) => currentActive.includes(index))]);
+                setCurrentItems(currentItems.filter((item, index) => !currentActive.includes(index)));
+                // setLeftItems(deleteItems.sort());
+            }
+        }
+        setDeleteActive([]);
+        setCurrentActive([]);
+    }
+
+    return (
+        <Box sx={{display: "flex", gap: 1}}>
+            <MediaBox clientId={clientId} changeTime={changeTime} key={"current"} active={currentActive} setItems={setCurrentItems} setActive={setCurrentActive}
+                      items={currentItems}></MediaBox>
+            <Grid container spacing={1} height={"min-content"} width={"10%"}>
+                <Grid size={10}>
+                    <Button onClick={() => MoveItems("current", true)}>&lt;&lt;</Button>
+                </Grid>
+                <Grid size={12}>
+                    <Button onClick={() => MoveItems("current", false)}>&lt;</Button>
+                </Grid>
+                <Grid size={12}>
+                    <Button onClick={() => MoveItems("delete", false)}>&gt;</Button>
+                </Grid>
+                <Grid size={12}>
+                    <Button onClick={() => MoveItems("delete", true)}>&gt;&gt;</Button>
+                </Grid>
+
+            </Grid>
+            <MediaBox clientId={clientId} changeTime={changeTime} key={"delete"} del={1} active={deleteActive} setItems={setDeleteItems} setActive={setDeleteActive}
+                      items={deleteItems}></MediaBox>
+        </Box>
+    )
+}
+export default DeleteMedia;

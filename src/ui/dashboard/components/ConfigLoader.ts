@@ -1,6 +1,6 @@
 
 
-interface ShowCaseConfig {
+interface ConfigLoader {
     mediaType: string;
     transitionStyle: string,
     transitionDuration: number,
@@ -14,7 +14,7 @@ interface PlaylistConfig {
     imagePaths: string[];
 }
 
-let config: ShowCaseConfig | null = null;
+let config: ConfigLoader | null = null;
 let playlistConfig: PlaylistConfig | null = null;
 
 export const loadShowCaseConfig = async (clientId: string) => {

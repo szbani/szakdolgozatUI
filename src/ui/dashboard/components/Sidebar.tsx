@@ -12,7 +12,7 @@ import {
     CloseRounded,
     ComputerRounded,
     LogoutRounded,
-    Person, Queue,
+    Person,
 } from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -113,14 +113,14 @@ export default function ResponsiveDrawer() {
                             <Typography>Displays</Typography>
                         </ListItemButton>
                     </ListItem>
-                    <ListItem sx={{paddingX: 0}}>
-                        <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"playlists"}
-                                        selected={currentTab == "playlists" ? true : false}
-                                        onClick={() => setCurrentTab('playlists')}>
-                            <Queue/>
-                            <Typography>Playlists</Typography>
-                        </ListItemButton>
-                    </ListItem>
+                    {/*<ListItem sx={{paddingX: 0}}>*/}
+                    {/*    <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"playlists"}*/}
+                    {/*                    selected={currentTab == "playlists" ? true : false}*/}
+                    {/*                    onClick={() => setCurrentTab('playlists')}>*/}
+                    {/*        <Queue/>*/}
+                    {/*        <Typography>Playlists</Typography>*/}
+                    {/*    </ListItemButton>*/}
+                    {/*</ListItem>*/}
                     {/*<ListItem sx={{paddingX: 0}}>*/}
                     {/*    <ListItemButton sx={{borderRadius: 3}} component={NavLink} to={"Timings"}*/}
                     {/*                    selected={currentTab == "timings" ? true : false}*/}

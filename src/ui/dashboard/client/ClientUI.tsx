@@ -1,13 +1,13 @@
 import Box from "@mui/material/Box";
-import {loadShowCaseConfig} from "../../showcase/ShowCaseConfig.ts";
+import {loadShowCaseConfig} from "../components/ConfigLoader.ts";
 import {useParams} from "react-router-dom";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
-import { useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Grid from "@mui/material/Grid2";
-import ActionsTiming from "./ActionsTiming.tsx";
 import CurrentConfiguration from "./CurrentConfiguration.tsx";
 import CurrentPlaying from "./CurrentPlaying.tsx";
 import UploadModal from "./UploadModal.tsx";
+import ChangeTime from "./ChangeTime.tsx";
 
 type ObjectFit = "contain" | "cover" | "fill" | "none" | "scale-down";
 
@@ -22,15 +22,24 @@ export interface slideShowProps {
     changeTime: string,
 }
 
-const CurrentActions = (slideShowConfig:slideShowProps) => {
+export interface changeTimesData {
+    start: string
+    end: string
+}
+
+// @ts-ignore
+const CurrentActions = ({slideShowConfig, setChangeTime, changeTimes}) => {
     return (
         <Box marginBottom={4}>
             <Grid container spacing={4}>
                 <Grid size={{xs: 12, sm: 12, md: 6, lg: 6.5, xl: 7}}>
                     <CurrentPlaying {...slideShowConfig}></CurrentPlaying>
+
                 </Grid>
                 <Grid size={{xs: 12, sm: 12, md: 6, lg: 5.5, xl: 5}}>
                     <CurrentConfiguration {...slideShowConfig}></CurrentConfiguration>
+                    <ChangeTime clientId={slideShowConfig.clientId} selectedTime={slideShowConfig.changeTime} setTime={setChangeTime}
+                                times={changeTimes}></ChangeTime>
                     <UploadModal {...slideShowConfig}></UploadModal>
                 </Grid>
             </Grid>
@@ -40,8 +49,12 @@ const CurrentActions = (slideShowConfig:slideShowProps) => {
 
 const ClientUI = () => {
 
+    const [changeTime, setChangeTime] = useState<string>("default");
+    const [changeTimes, setChangeTimes] = useState<changeTimesData[]>([]);
+    const [firstLoad, setFirstLoad] = useState<boolean>(true);
+
     // @ts-ignore
-    const { fileNames, setNewConfig, newConfig} = useWebSocketContext();
+    const {fileNames, setNewConfig, newConfig} = useWebSocketContext();
     const {clientId} = useParams() || "";
     const [slideShowConfig, setSlideShowConfig] = useState<slideShowProps>({
         mediaType: "image",
@@ -51,16 +64,21 @@ const ClientUI = () => {
         interval: 5,
         objectFit: "fill",
         fileNames: [],
-        changeTime: "default"
+        changeTime: changeTime,
     });
 
     useEffect(() => {
         if (newConfig) setNewConfig(false);
+        // @ts-ignore
         loadConfig(clientId);
-    }, [fileNames,newConfig]);
+    }, [fileNames, newConfig]);
 
     let now = new Date();
-    let changeTime = new Date();
+
+    useEffect(() => {
+        // @ts-ignore
+        loadConfig(clientId);
+    }, [changeTime]);
 
 
     const loadConfig = async (userId: string) => {
@@ -69,9 +87,10 @@ const ClientUI = () => {
             console.log('loadConfig:', userId);
             const config = await loadShowCaseConfig(userId);
             console.log('config:', config);
-            if (config !== null) {
+            if (config !== null && firstLoad) {
                 let fileNamesTime = "default";
                 if (config.changeTimes.length > 0) {
+                    const timesArray: changeTimesData[] = [];
                     for (let i = 0; i < config.changeTimes.length; i++) {
                         const hour = config.changeTimes[i].split(":").map(Number)[0];
                         const minute = config.changeTimes[i].split(":").map(Number)[1];
@@ -106,24 +125,29 @@ const ClientUI = () => {
                                         nextPlanedChangeEndTime.setHours(endhour, endminute, 0, 0);
 
                                         if (now.getHours() < nextPlanedChangeTime.getHours() || (now.getHours() === nextPlanedChangeTime.getHours() && now.getMinutes() < nextPlanedChangeTime.getMinutes())) {
-                                            // changeTime = nextPlanedChangeTime;
+                                            // nextTime = nextPlanedChangeTime;
                                             recurzive(currentI);
-                                        } else {
-                                            changeTime = endTime;
                                         }
-                                    } else {
-                                        changeTime = endTime;
                                     }
-                                    console.log('changeTime:', changeTime);
                                 }
                             }
                         }
                         recurzive(i)
+                        if (config.changeTimes[i] !== "default") {
+                            timesArray.push({
+                                start: config.changeTimes[i],
+                                //@ts-ignore
+                                end: config?.[config.changeTimes[i]].endTime
+                            });
+                        }
                     }
+                    setChangeTimes(timesArray);
+                    setChangeTime(fileNamesTime);
                 }
                 // @ts-ignore
                 if (config?.[fileNamesTime].mediaType === "image") {
                     setSlideShowConfig({
+                        // @ts-ignore
                         mediaType: config?.[fileNamesTime].mediaType,
                         clientId: userId,
                         // @ts-ignore
@@ -136,8 +160,9 @@ const ClientUI = () => {
                         changeTime: fileNamesTime,
                     });
                     // @ts-ignore
-                }else if (config?.[fileNamesTime].mediaType === "video"){
+                } else if (config?.[fileNamesTime].mediaType === "video") {
                     setSlideShowConfig({
+                        // @ts-ignore
                         mediaType: config?.[fileNamesTime].mediaType,
                         clientId: userId,
                         // @ts-ignore
@@ -145,8 +170,37 @@ const ClientUI = () => {
                         changeTime: fileNamesTime,
                     });
                 }
-
+            } else if (config !== null) {
+                if (config.changeTimes.includes(changeTime)) {
+                    // @ts-ignore
+                    if (config?.[changeTime].mediaType === "image") {
+                        setSlideShowConfig({
+                            // @ts-ignore
+                            mediaType: config?.[changeTime].mediaType,
+                            clientId: userId,
+                            // @ts-ignore
+                            fileNames: config?.[changeTime].paths,
+                            transitionStyle: config?.transitionStyle,
+                            transitionDuration: config?.transitionDuration,
+                            interval: config?.imageInterval,
+                            // @ts-ignore
+                            objectFit: config?.imageFit,
+                            changeTime: changeTime,
+                        });
+                        // @ts-ignore
+                    } else if (config?.[changeTime].mediaType === "video") {
+                        setSlideShowConfig({
+                            // @ts-ignore
+                            mediaType: config?.[changeTime].mediaType,
+                            clientId: userId,
+                            // @ts-ignore
+                            fileNames: config?.[changeTime].paths,
+                            changeTime: changeTime,
+                        });
+                    }
+                }
             }
+            setFirstLoad(false);
         } catch (error) {
             console.error('Error loading config:', error);
         }
@@ -154,8 +208,11 @@ const ClientUI = () => {
 
     return (
         <Box>
-            <CurrentActions {...slideShowConfig}/>
-            <ActionsTiming></ActionsTiming>
+            <CurrentActions
+                slideShowConfig={slideShowConfig}
+                setChangeTime={setChangeTime}
+                changeTimes={changeTimes}
+            />
         </Box>
     )
 }

@@ -11,6 +11,7 @@ import {slideShowProps} from "./ClientUI.tsx";
 import PictureOrder from "./PictureOrder.tsx";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
+import DeleteMedia from "./DeleteMedia.tsx";
 
 const BaseUploadMenuModal = (props: slideShowProps) => {
 
@@ -36,6 +37,7 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
 
     let steps = [
         // 'Select Time Period',
+        'Select Files to Delete',
         'Select Files to Upload',
     ];
 
@@ -60,21 +62,22 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
     };
 
     const [open, setOpen] = useState(false);
-    const handleOpen = ( page:number) => {
-        setTabIndex(page)
+    const handleOpen = (page: number) => {
+        setTabIndex(0)
         setActiveStep(page)
         setOpen(true)
     };
     const handleClose = () => setOpen(false);
 
     return (
-        <Card sx={{width: '100%', mt:2, pb:2}}>
-            <CardHeader title={"Content Management"}></CardHeader>
-            <CardActions sx={{ml:2}}>
-                <Button onClick={() => handleOpen(0)}>Upload Content</Button>
+        <Card sx={{width: '100%', mt: 2, pb: 2}}>
+            <CardHeader title={"Content Management"} subheader={"Manage the current schedules content."} sx={{pb:1}}></CardHeader>
+            <CardActions sx={{ml: 2, display: "block"}}>
+                <Button onClick={() => handleOpen(0)}>Delete Content</Button>
+                <Button onClick={() => handleOpen(1)}>Upload Content</Button>
                 {
                     props.mediaType === 'image' &&
-                    <Button onClick={() => handleOpen(1)}>Change Image Order</Button>
+                    <Button onClick={() => handleOpen(2)}>Change Image Order</Button>
                 }
             </CardActions>
             <Modal
@@ -93,7 +96,7 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
                 <Fade in={open}>
                     <Box sx={style}>
                         <Stepper activeStep={activeStep} alternativeLabel nonLinear sx={{mb: 2}}>
-                            {steps.map((label,index) => {
+                            {steps.map((label, index) => {
                                 const stepProps: { completed?: boolean } = {};
                                 return (
                                     <Step key={label} {...stepProps}>
@@ -103,57 +106,65 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
                             })}
                         </Stepper>
                         <Box>
-                            {activeStep === 0
-                                ? <Card
-                                    sx={{
-                                        marginBottom:4
-                                    }}
-                                >
-                                    <TabContext value={tabIndex}>
-                                        <TabList
-                                            onChange={handleChange}
-                                            sx={{
-                                                p: 0.5,
-                                                gap: 0.5,
-                                                [`& .${tabClasses.root}[aria-selected="true"]`]: {
-                                                    boxShadow: 'sm',
-                                                    borderRadius: 4,
-                                                    bgcolor: 'background.default',
-                                                },
-                                                [`& .${tabClasses.root}:hover`]: {
-                                                    boxShadow: 'sm',
-                                                    borderRadius: 4,
-                                                    bgcolor: 'background.default',
-                                                },
-                                            }}
-                                        >
-                                            <Tab
-                                                icon={<Image/>}
-                                                iconPosition={"start"}
-                                                label={"Images"}
-                                                value={0}
-                                                sx={{paddingy: 1, margin: 0.5, minHeight: '48px',}}
+                            {activeStep === 0 ? <DeleteMedia fileNames={props.fileNames} changeTime={props.changeTime}
+                                                             clientId={props.clientId}></DeleteMedia> :
+                                activeStep === 1
+                                    ? <Card
+                                        sx={{
+                                            marginBottom: 4
+                                        }}
+                                    >
+                                        <TabContext value={tabIndex}>
+                                            <TabList
+                                                onChange={handleChange}
+                                                sx={{
+                                                    p: 0.5,
+                                                    gap: 0.5,
+                                                    [`& .${tabClasses.root}[aria-selected="true"]`]: {
+                                                        boxShadow: 'sm',
+                                                        borderRadius: 4,
+                                                        bgcolor: 'background.default',
+                                                    },
+                                                    [`& .${tabClasses.root}:hover`]: {
+                                                        boxShadow: 'sm',
+                                                        borderRadius: 4,
+                                                        bgcolor: 'background.default',
+                                                    },
+                                                }}
                                             >
-                                            </Tab>
-                                            <Tab
-                                                icon={<Videocam/>}
-                                                iconPosition={"start"}
-                                                label={"Video"}
-                                                value={1}
-                                                sx={{paddingy: 1, margin: 0.5, minHeight: '48px',}}
-                                            >
-                                            </Tab>
-                                        </TabList>
-                                        <TabPanel value={0}><FileDropZone acceptedFileType={'image'}
-                                                                          isPlaylist={false}
-                                                                          changeTime={props.changeTime}
-                                        /></TabPanel>
-                                        <TabPanel value={1}><FileDropZone acceptedFileType={'video'}
-                                                                          isPlaylist={false}
-                                                                          changeTime={props.changeTime}
-                                        /></TabPanel>
-                                    </TabContext></Card>
-                                : <PictureOrder {...props}></PictureOrder>
+                                                <Tab
+                                                    icon={<Image/>}
+                                                    iconPosition={"start"}
+                                                    label={"Images"}
+                                                    value={0}
+                                                    sx={{paddingy: 1, margin: 0.5, minHeight: '48px',}}
+                                                >
+                                                </Tab>
+                                                <Tab
+                                                    icon={<Videocam/>}
+                                                    iconPosition={"start"}
+                                                    label={"Video"}
+                                                    value={1}
+                                                    sx={{paddingy: 1, margin: 0.5, minHeight: '48px',}}
+                                                >
+                                                </Tab>
+                                            </TabList>
+                                            <TabPanel value={0}>
+                                                <FileDropZone
+                                                    acceptedFileType={'image'}
+                                                    isPlaylist={false}
+                                                    changeTime={props.changeTime}
+                                                />
+                                            </TabPanel>
+                                            <TabPanel value={1}>
+                                                <FileDropZone
+                                                    acceptedFileType={'video'}
+                                                    isPlaylist={false}
+                                                    changeTime={props.changeTime}
+                                                />
+                                            </TabPanel>
+                                        </TabContext></Card>
+                                    : <PictureOrder {...props}></PictureOrder>
                             }
                         </Box>
                         <Box sx={{display: 'flex', flexDirection: 'row'}}>
@@ -163,7 +174,7 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
                             >
                                 {activeStep === 0 ? 'Exit' : 'Back'}
                             </Button>
-                            <Button onClick={handleNext} sx={{ml:2}}>
+                            <Button onClick={handleNext} sx={{ml: 2}}>
                                 {activeStep === steps.length - 1 ? 'Exit' : 'Next'}
                             </Button>
                         </Box>

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {loadPlaylistConfig} from "../../showcase/ShowCaseConfig.ts";
+import {loadPlaylistConfig} from "../components/ConfigLoader.ts";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import {CardActionArea} from "@mui/material";
