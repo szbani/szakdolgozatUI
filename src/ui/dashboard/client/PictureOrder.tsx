@@ -1,7 +1,7 @@
 // @ts-nocheck
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import {CardActions, CardContent} from "@mui/material";
+import {CardActions, CardContent, useMediaQuery} from "@mui/material";
 import {
     closestCenter,
     DndContext, DragOverlay,
@@ -13,7 +13,7 @@ import {
 import {CSS} from '@dnd-kit/utilities';
 import Box from "@mui/material/Box";
 import {slideShowProps} from "./ClientUI.tsx";
-import {restrictToHorizontalAxis} from "@dnd-kit/modifiers";
+import {restrictToHorizontalAxis, restrictToVerticalAxis} from "@dnd-kit/modifiers";
 import {
     arrayMove,
     horizontalListSortingStrategy,
@@ -35,16 +35,22 @@ const SortableItem = (props) => {
     } = useSortable({
         id: props.fileName,
     });
+    const isXs = useMediaQuery(theme => theme.breakpoints.only("xs"));
+    const isSm = useMediaQuery(theme => theme.breakpoints.only("sm"));
 
     const style = {
         transform: CSS.Transform.toString(transform),
-        height: 150,
+        height: isXs ? "20vh" : "25vh",
+        width: isXs ? "34vw" : isSm ? "42vw" : "30vw",
         margin: 8,
+        border: props.active ? "2px solid #05e195" : "1px solid black"
     };
 
     return (
-        <img src={`/displays/${props.clientId}/${props.changeTime.replace(":","_")}/${props.fileName}`} id={props.fileName} ref={setNodeRef}
-             style={style} {...attributes} {...listeners}/>
+        <img src={`/displays/${props.clientId}/${props.changeTime.replace(":", "_")}/${props.fileName}`}
+             id={props.fileName} ref={setNodeRef}
+             style={style} {...attributes} {...listeners}
+        />
     );
 }
 
@@ -85,6 +91,14 @@ const PictureOrder = (props: slideShowProps) => {
         setActiveId(null);
     }
 
+    function handleButton(direction) {
+        setFileOrder((items) => {
+            const oldIndex = items.indexOf(activeId);
+            const newIndex = oldIndex - direction;
+            return arrayMove(items, oldIndex, newIndex);
+        });
+    }
+
     function handleOrderChange() {
         const jsonToSend = {
             type: 'modifyImageOrder',
@@ -96,13 +110,27 @@ const PictureOrder = (props: slideShowProps) => {
         sendMessage(JSON.stringify(jsonToSend));
     }
 
+    const cardTitle = () => {
+        return (
+            <Box display={"flex"} flexDirection={"row"} justifyContent={"space-between"}>
+                <Typography fontSize={"1.5rem"}>Change Image Order</Typography>
+                <Button onClick={handleOrderChange}>Save Order</Button>
+            </Box>
+        )
+    }
+
     return (
-        <Card sx={{marginBottom: 4}}>
-            <CardHeader title={'Change Image Order'}></CardHeader>
-            <CardContent sx={{display: "flex", overflow: "scroll"}}>
-                { fileOrder.length === 0 && <Typography margin={5} fontSize={20}>No images to display</Typography>}
+        <Card>
+            <CardHeader title={cardTitle()}/>
+            <CardContent sx={{
+                display: "flex",
+                height: {xs: "60vh", md: "auto"},
+                overflow: "auto",
+                flexDirection: "row",
+                flexWrap: {xs: "wrap", md: "nowrap"}
+            }}>
+                {fileOrder.length === 0 && <Typography margin={5} fontSize={20}>No images to display</Typography>}
                 <DndContext
-                    modifiers={[restrictToHorizontalAxis]}
                     sensors={sensors}
                     collisionDetection={closestCenter}
                     onDragStart={handleDragStart}
@@ -114,19 +142,27 @@ const PictureOrder = (props: slideShowProps) => {
                         id={'image-list'}
                     >
                         {fileOrder.map((fileName) => {
-                            return <SortableItem clientId={props.clientId} fileName={fileName} changeTime={props.changeTime}></SortableItem>
+                            return <SortableItem active={activeId==fileName} clientId={props.clientId} fileName={fileName}
+                                                 changeTime={props.changeTime}></SortableItem>
                         })}
                     </SortableContext>
-                    {/*<DragOverlay>*/}
-                    {/*    {activeId ? (*/}
-                    {/*        <Box>*/}
-                    {/*            <img src={`/displays/${props.clientId}/${props.changeTime}/${activeId}`} style={{height: 150}}/>*/}
-                    {/*        </Box>*/}
-                    {/*    ) : null}*/}
-                    {/*</DragOverlay>*/}
+                    <DragOverlay>
+                        {activeId ? (
+                            <Box>
+                                <img
+                                    src={`/displays/${props.clientId}/${props.changeTime.replace(":", "_")}/${activeId}`}
+                                    style={{
+                                        height: "25vh", maxWidth: "30vw"
+                                    }}/>
+                            </Box>
+                        ) : null}
+                    </DragOverlay>
                 </DndContext>
             </CardContent>
-            <CardActions><Button onClick={handleOrderChange} disabled={fileOrder.length === 0}>Change Order</Button></CardActions>
+            <CardActions>
+                <Button sx={{width:{xs:"50%"}}} onClick={() => handleButton(1)}>Move Up</Button>
+                <Button sx={{width:{xs:"50%"}}} onClick={() => handleButton(-1)}>Move Down</Button>
+            </CardActions>
         </Card>
     );
 }

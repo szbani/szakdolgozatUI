@@ -27,12 +27,12 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '80%',
         bgcolor: 'background.paper',
         border: '0px solid #000',
         boxShadow: 24,
         borderRadius: 4,
-        p: 4,
+        py: 4,
+        px: 2,
     };
 
     let steps = [
@@ -70,16 +70,19 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
     const handleClose = () => setOpen(false);
 
     return (
-        <Card sx={{width: '100%', mt: 2, pb: 2}}>
-            <CardHeader title={"Content Management"} subheader={"Manage the current schedules content."} sx={{pb:1}}></CardHeader>
-            <CardActions sx={{ml: 2, display: "block"}}>
-                <Button onClick={() => handleOpen(0)}>Delete Content</Button>
-                <Button onClick={() => handleOpen(1)}>Upload Content</Button>
-                {
-                    props.mediaType === 'image' &&
-                    <Button onClick={() => handleOpen(2)}>Change Image Order</Button>
-                }
-            </CardActions>
+        <Box>
+            <Card sx={{width: '100%', mt: 2, pb: 2}}>
+                <CardHeader title={"Content Management"} subheader={"Manage the current schedules content."}
+                            sx={{pb: 1}}></CardHeader>
+                <CardActions sx={{display: "block"}}>
+                    <Button sx={{m: "4px!important"}} onClick={() => handleOpen(0)}>Delete Content</Button>
+                    <Button sx={{m: "4px!important"}} onClick={() => handleOpen(1)}>Upload Content</Button>
+                    {
+                        props.mediaType === 'image' &&
+                        <Button sx={{m: "4px!important"}} onClick={() => handleOpen(2)}>Change Image Order</Button>
+                    }
+                </CardActions>
+            </Card>
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -92,9 +95,10 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
                         timeout: 500,
                     },
                 }}
+                sx={{height: '100%', width: '100%'}}
             >
                 <Fade in={open}>
-                    <Box sx={style}>
+                    <Box sx={style} width={{xs: "100%", md: "80%"}} height={{xs: "100%", md: "80%"}}>
                         <Stepper activeStep={activeStep} alternativeLabel nonLinear sx={{mb: 2}}>
                             {steps.map((label, index) => {
                                 const stepProps: { completed?: boolean } = {};
@@ -106,12 +110,13 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
                             })}
                         </Stepper>
                         <Box>
-                            {activeStep === 0 ? <DeleteMedia fileNames={props.fileNames} changeTime={props.changeTime}
-                                                             clientId={props.clientId}></DeleteMedia> :
-                                activeStep === 1
+                            {activeStep === 0 ?
+                                <DeleteMedia fileNames={props.fileNames} changeTime={props.changeTime}
+                                             clientId={props.clientId}/>
+                                : activeStep === 1
                                     ? <Card
                                         sx={{
-                                            marginBottom: 4
+                                            marginBottom: 4,
                                         }}
                                     >
                                         <TabContext value={tabIndex}>
@@ -163,18 +168,22 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
                                                     changeTime={props.changeTime}
                                                 />
                                             </TabPanel>
-                                        </TabContext></Card>
+                                        </TabContext>
+                                    </Card>
                                     : <PictureOrder {...props}></PictureOrder>
                             }
                         </Box>
-                        <Box sx={{display: 'flex', flexDirection: 'row'}}>
-                            <Box sx={{flex: '1 1 auto'}}/>
+                        <Box position={"absolute"} bottom={0} right={0} p={2} gap={2} display={"flex"} justifyContent={"flex-end"} width={"100%"}>
                             <Button
                                 onClick={handleBack}
+                                sx={{width:{xs:"100%", md:"15%"}}}
                             >
                                 {activeStep === 0 ? 'Exit' : 'Back'}
                             </Button>
-                            <Button onClick={handleNext} sx={{ml: 2}}>
+                            <Button
+                                onClick={handleNext}
+                                sx={{width:{xs:"100%", md:"15%"}}}
+                            >
                                 {activeStep === steps.length - 1 ? 'Exit' : 'Next'}
                             </Button>
                         </Box>
@@ -182,9 +191,8 @@ const BaseUploadMenuModal = (props: slideShowProps) => {
                     </Box>
                 </Fade>
             </Modal>
-        </Card>
+        </Box>
     );
-
 }
 
 export default BaseUploadMenuModal;

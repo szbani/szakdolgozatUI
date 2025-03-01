@@ -9,6 +9,8 @@ import ShowCaseSwiper from "./ShowCaseSwiper.tsx";
 const MediaPlayer = ({username, fileName, changeTime}) => {
     const [windowSize, setWindowSize] = useState({width: window.innerWidth, height: window.innerHeight});
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    const changeTimeString = changeTime.replace(":", "_");
     useEffect(() => {
         const handleResize = () => {
             setWindowSize({width: window.innerWidth, height: window.innerHeight});
@@ -28,7 +30,7 @@ const MediaPlayer = ({username, fileName, changeTime}) => {
 
     return (
         <video ref={videoRef} muted controls autoPlay loop style={{width: windowSize.width, height: windowSize.height}}>
-            <source src={`displays/${username}/${changeTime}/${fileName}`} type="video/mp4"/>
+            <source src={`displays/${username}/${changeTimeString}/${fileName}`} type="video/mp4"/>
         </video>
     )
 }

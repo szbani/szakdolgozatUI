@@ -167,14 +167,14 @@ export const Client = ({client, index, EditDialogHandler}) => {
                             <MenuItem
                                 sx={{paddingBottom: "12px", marginTop: "0px", gap: 1}}
                                 color="danger"
-                                onClick={() => RebootDisplay(client.ClientName)}
+                                onClick={() => RebootDisplay(client.KioskName)}
                             >
                                 <RestartAlt/>
                                 <Typography>Reboot</Typography>
                             </MenuItem>
                             <MenuItem
                                 sx={ErrorMenuItemStyle}
-                                onClick={() => DisconnectDisplay(client.ClientName)}
+                                onClick={() => DisconnectDisplay(client.KioskName)}
                             >
                                 <PowerOff/>
                                 <Typography>ShutDown</Typography>
@@ -189,7 +189,7 @@ export const Client = ({client, index, EditDialogHandler}) => {
                             sx={ErrorMenuStyle}
                         >
                             <MenuItem
-                                onClick={() => RegisterDisplay(client.ClientName)}
+                                onClick={() => RegisterDisplay(client.KioskName)}
                                 sx={{paddingY: "9px", gap: 1}}
                             >
                                 <AddToQueue/>

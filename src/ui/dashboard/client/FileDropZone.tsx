@@ -144,9 +144,10 @@ export const FileDropZone = (props) => {
         //start uploading
         if (uploading && filesToUpload.length > 0) {
 
+            const type = filesToUpload[0].name.split('.');
             const jsonToSend = JSON.stringify({
                 type: 'startFileStream',
-                fileName: filesToUpload[0].name,
+                fileType: type[type.length - 1],
                 changeTime: props.changeTime
             });
             sendMessage(jsonToSend);
@@ -266,7 +267,7 @@ export const FileDropZone = (props) => {
         <Box>
             <section className="container">
                 <Grid container spacing={2}>
-                    <Grid size={{sm: 12, lg: 6}} sx={{
+                    <Grid size={{xs: 12, md: 2.5, lg: 4.5, xl:6}} sx={{
                         textAlign: "center",
                         display: 'flex',
                         alignItems: 'center',
@@ -279,7 +280,7 @@ export const FileDropZone = (props) => {
                             <p>Drag 'n' drop a video file here, or click to select a file</p> :
                             <p>Drag 'n' drop some Images here, or click to select files (15 max)</p>}
                     </Grid>
-                    <Grid size={{xs: 12, lg: 6}}>
+                    <Grid size={{xs: 12,  md: 9.5, lg: 7.5, xl: 6}}>
                         <aside style={thumbsContainer}>
                             {thumbs}
                             <AppSnackbar message={eSnackbarMessage} open={eSnackbarOpen} setOpen={seteSnackbarOpen}
@@ -295,14 +296,14 @@ export const FileDropZone = (props) => {
                                         onClick={() => handleUpload()}
                                         sx={{marginRight: 1}}
                                     >
-                                        {uploading ? "Uploading " : "Upload To Existing Files"}
+                                        {uploading ? "Uploading " : "Upload Images"}
                                     </Button> :
                                     <Button
                                         disabled={uploading}
                                         onClick={() => handleUpload()}
                                         sx={{marginRight: 1}}
                                     >
-                                        {uploading ? "Uploading " : "Replace Existing Files"}
+                                        {uploading ? "Uploading " : "Upload Video"}
                                     </Button>
                                 }
                             </>

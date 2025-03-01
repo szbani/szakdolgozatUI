@@ -9,6 +9,7 @@ import Card from "@mui/material/Card";
 import {useEffect, useState} from "react";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
 import {slideShowProps} from "./ClientUI.tsx";
+import FormControl from "@mui/material/FormControl";
 
 const CurrentConfiguration = (config: slideShowProps) => {
     const {sendMessage} = useWebSocketContext();
@@ -71,11 +72,10 @@ const CurrentConfiguration = (config: slideShowProps) => {
                 fontWeight={"bold"}>
                 Content Configuration
             </Typography>}
-            sx={{padding: 2, paddingLeft: 3, paddingBottom: 0}}
             subheader={"Configure how the Images are displayed."}
         />
         <CardContent
-            sx={{padding: 2, paddingLeft: 3}}
+            sx={{padding: 2,pt:1}}
         >
             <Box
                 sx={{
@@ -85,7 +85,7 @@ const CurrentConfiguration = (config: slideShowProps) => {
                     gap: 4
                 }}
             >
-                <Box>
+                <FormControl sx={{width: "50%"}}>
                     <InputLabel id={"transition-style-select-label"}>Transition Style</InputLabel>
                     <Select
                         labelId={"transition-style-select-label"}
@@ -101,7 +101,7 @@ const CurrentConfiguration = (config: slideShowProps) => {
                         <MenuItem value={"shutters"}>Shutters</MenuItem>
                         <MenuItem value={"creative"}>Creative</MenuItem>
                     </Select>
-                </Box>
+                </FormControl>
                 <Box width={250}>
                     <InputLabel>Transition Duration</InputLabel>
                     <Slider
@@ -123,10 +123,10 @@ const CurrentConfiguration = (config: slideShowProps) => {
                     display: {xs: "block", sm: "flex", md: "block", lg: "flex"},
                     alignItems: "center",
                     marginBottom: 2,
-                    gap: 6
+                    gap: 4
                 }}
             >
-                <Box>
+                <FormControl sx={{width: "50%"}}>
                     <InputLabel id={"image-fit-select-label"}>Image Fit</InputLabel>
                     <Select
                         labelId={"image-fit-select-label"}
@@ -143,7 +143,7 @@ const CurrentConfiguration = (config: slideShowProps) => {
                         <MenuItem value={"none"}>None</MenuItem>
                         <MenuItem value={"scale-down"}>Scale Down</MenuItem>
                     </Select>
-                </Box>
+                </FormControl>
                 <Box width={250}>
                     <Typography>
                         Image Interval
@@ -164,6 +164,7 @@ const CurrentConfiguration = (config: slideShowProps) => {
             </Box>
             <Box>
                 <Button
+                    sx={{m:"4px!important"}}
                     variant="contained"
                     color="primary"
                     disabled={mediaType !== 'image'}

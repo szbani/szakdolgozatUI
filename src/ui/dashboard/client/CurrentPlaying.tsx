@@ -18,6 +18,8 @@ const CurrentPlaying = (slideShowConfig?: slideShowProps) => {
         }
     }, [slideShowConfig.mediaType, slideShowConfig.fileNames]);
 
+    const changeTimeString = slideShowConfig?.changeTime?.replace(":", "_");
+
     return <Card sx={{minHeight: {xs: 320, md: 470, lg: 700}}}>
         <CardHeader
             title={<Typography
@@ -38,7 +40,7 @@ const CurrentPlaying = (slideShowConfig?: slideShowProps) => {
                                 <video key={index} ref={videoRef} muted controls autoPlay loop
                                        style={{objectFit: "contain", width: "100%", height: "100%"}}>
                                     <source
-                                        src={`/displays/${slideShowConfig.clientId}/${slideShowConfig?.changeTime}/${fileName}`}
+                                        src={`/displays/${slideShowConfig.clientId}/${changeTimeString}/${fileName}`}
                                         type="video/mp4"/>
                                 </video>
                             )

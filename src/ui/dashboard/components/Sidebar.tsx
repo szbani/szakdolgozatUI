@@ -1,6 +1,6 @@
 import {
     AppBar,
-    Drawer,  LinearProgress,
+    Drawer,
     ListItemButton,
     listItemButtonClasses,
     Toolbar
@@ -9,7 +9,6 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import {
-    CloseRounded,
     ComputerRounded,
     LogoutRounded,
     Person,
@@ -22,8 +21,7 @@ import Typography from "@mui/material/Typography";
 import {useEffect, useState} from "react";
 import ColorSchemeToggle from "./ColorSchemeToggle.tsx";
 import {NavLink} from "react-router-dom";
-import Card from "@mui/material/Card";
-import Stack from "@mui/material/Stack";
+
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
 import Avatar from "@mui/material/Avatar";
 
@@ -33,7 +31,7 @@ export default function ResponsiveDrawer() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
     //@ts-ignore
-    const {registeredDisplays, sendMessage, accountInformation} = useWebSocketContext();
+    const {sendMessage, accountInformation} = useWebSocketContext();
 
     const Logout = () => {
         sendMessage(JSON.stringify({type: 'Logout'}));
@@ -153,32 +151,32 @@ export default function ResponsiveDrawer() {
                 {/*/!*        </ListItemButton>*!/*/}
                 {/*/!*    </ListItem>*!/*/}
                 {/*</List>*/}
-                <Card
-                    // variant="soft"
-                    color="neutral"
-                    sx={{
-                        boxShadow: 'none',
-                        mt: 'auto',
-                        flexGrow: 0,
-                        // '--ListItem-radius': (theme) => theme.cssVariables.radius.sm,
-                        '--List-gap': '8px',
-                    }}
-                >
-                    <Stack
-                        direction="row"
-                        sx={{justifyContent: 'space-between', alignItems: 'center'}}
-                    >
-                        <Typography>Available displays</Typography>
-                        <IconButton>
-                            <CloseRounded/>
-                        </IconButton>
-                    </Stack>
-                    <Typography>
-                        There are {registeredDisplays.length} device online ready to display content
-                        from {registeredDisplays.length} devices.
-                    </Typography>
-                    <LinearProgress variant={'determinate'} value={80} sx={{my: 1}}/>
-                </Card>
+                {/*<Card*/}
+                {/*    // variant="soft"*/}
+                {/*    color="neutral"*/}
+                {/*    sx={{*/}
+                {/*        boxShadow: 'none',*/}
+                {/*        mt: 'auto',*/}
+                {/*        flexGrow: 0,*/}
+                {/*        // '--ListItem-radius': (theme) => theme.cssVariables.radius.sm,*/}
+                {/*        '--List-gap': '8px',*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <Stack*/}
+                {/*        direction="row"*/}
+                {/*        sx={{justifyContent: 'space-between', alignItems: 'center'}}*/}
+                {/*    >*/}
+                {/*        <Typography>Available displays</Typography>*/}
+                {/*        <IconButton>*/}
+                {/*            <CloseRounded/>*/}
+                {/*        </IconButton>*/}
+                {/*    </Stack>*/}
+                {/*    <Typography>*/}
+                {/*        There are {registeredDisplays.length} device online ready to display content*/}
+                {/*        from {registeredDisplays.length} devices.*/}
+                {/*    </Typography>*/}
+                {/*    <LinearProgress variant={'determinate'} value={80} sx={{my: 1}}/>*/}
+                {/*</Card>*/}
 
             </Box>
             <Divider/>

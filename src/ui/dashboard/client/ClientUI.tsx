@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid2";
 import CurrentConfiguration from "./CurrentConfiguration.tsx";
 import CurrentPlaying from "./CurrentPlaying.tsx";
 import UploadModal from "./UploadModal.tsx";
-import ChangeTime from "./ChangeTime.tsx";
+import Schedule from "./Schedule.tsx";
 
 type ObjectFit = "contain" | "cover" | "fill" | "none" | "scale-down";
 
@@ -34,12 +34,11 @@ const CurrentActions = ({slideShowConfig, setChangeTime, changeTimes}) => {
             <Grid container spacing={4}>
                 <Grid size={{xs: 12, sm: 12, md: 6, lg: 6.5, xl: 7}}>
                     <CurrentPlaying {...slideShowConfig}></CurrentPlaying>
-
                 </Grid>
                 <Grid size={{xs: 12, sm: 12, md: 6, lg: 5.5, xl: 5}}>
                     <CurrentConfiguration {...slideShowConfig}></CurrentConfiguration>
-                    <ChangeTime clientId={slideShowConfig.clientId} selectedTime={slideShowConfig.changeTime} setTime={setChangeTime}
-                                times={changeTimes}></ChangeTime>
+                    <Schedule clientId={slideShowConfig.clientId} selectedTime={slideShowConfig.changeTime} setTime={setChangeTime}
+                              times={changeTimes}></Schedule>
                     <UploadModal {...slideShowConfig}></UploadModal>
                 </Grid>
             </Grid>
@@ -58,7 +57,7 @@ const ClientUI = () => {
     const {clientId} = useParams() || "";
     const [slideShowConfig, setSlideShowConfig] = useState<slideShowProps>({
         mediaType: "image",
-        clientId: "",
+        clientId: clientId || "",
         transitionStyle: "slide",
         transitionDuration: 1,
         interval: 5,
@@ -199,6 +198,18 @@ const ClientUI = () => {
                         });
                     }
                 }
+            }
+            else {
+                setSlideShowConfig({
+                    mediaType: "image",
+                    clientId: userId,
+                    transitionStyle: "slide",
+                    transitionDuration: 1,
+                    interval: 5,
+                    objectFit: "fill",
+                    fileNames: [],
+                    changeTime: "default",
+                });
             }
             setFirstLoad(false);
         } catch (error) {

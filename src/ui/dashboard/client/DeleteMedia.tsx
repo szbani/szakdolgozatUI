@@ -8,6 +8,7 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import {useWebSocketContext} from "../../../websocket/WebSocketContext.tsx";
+import {useMediaQuery} from "@mui/material";
 
 const BoxItem = ({clientId,item,changeTime, active, onClick}) => {
 
@@ -42,15 +43,18 @@ const MediaBox = ({clientId, active, changeTime, setActive, items, setItems, del
     }
 
     const HandleDelete = () => {
-        const jsonToSend = JSON.stringify({
-            "type": "deleteMedia",
-            "targetUser": clientId,
-            "changeTime": changeTime,
-            "fileNames": items
-        });
-        // console.log(jsonToSend);
-        setItems([]);
-        sendMessage(jsonToSend);
+        if (items.length != 0) {
+
+            const jsonToSend = JSON.stringify({
+                "type": "deleteMedia",
+                "targetUser": clientId,
+                "changeTime": changeTime,
+                "fileNames": items
+            });
+            // console.log(jsonToSend);
+            setItems([]);
+            sendMessage(jsonToSend);
+        }
     }
 
     const setItemActive = (index) => {
@@ -65,17 +69,17 @@ const MediaBox = ({clientId, active, changeTime, setActive, items, setItems, del
     const DeleteTitle = () => {
         return (
             <Box display={"flex"}>
-                <Typography fontSize={"1.5rem"}>Content To Delete</Typography>
-                <Button sx={{marginLeft:"auto"}} onClick={HandleDelete}>Delete Items</Button>
+                <Typography fontSize={"1.5rem"}>Files To Delete</Typography>
+                <Button sx={{marginLeft:"auto"}} onClick={HandleDelete}>Delete Files</Button>
             </Box>
         )
     }
 
     return (
-        <Card sx={{width: "45%", height: 550}}>
-            <CardHeader title={del == 0 ? "Content To Remain" : DeleteTitle()} sx={{height: "15%"}}></CardHeader>
-            <CardContent sx={{height: "85%", overflow: "scroll"}}>
-                <Grid container spacing={1}>
+        <Card sx={{width:{xs:"100%",md:"50%"},height: {xs:"35vh",md:"60vh"}}}>
+            <CardHeader title={del == 0 ? "Files To Remain" : DeleteTitle()} sx={{height: "15%"}}></CardHeader>
+            <CardContent sx={{p:0,m:2,height:"80%", overflow:"scroll"}}>
+                <Grid container spacing={1} overflow={"scroll"}>
                     {items.map((item, index) => {
                         return (
                             <BoxItem changeTime={changeTimeDir} clientId={clientId} key={index} item={item} onClick={() => setItemActive(index)}
@@ -94,6 +98,7 @@ const DeleteMedia = ({fileNames, changeTime, clientId}) => {
     const [currentActive, setCurrentActive] = useState<number[]>([]);
     const [deleteActive, setDeleteActive] = useState<number[]>([]);
 
+    const isXs = useMediaQuery(theme => theme.breakpoints.down("md"));
 
 
     useEffect(() => {
@@ -141,21 +146,21 @@ const DeleteMedia = ({fileNames, changeTime, clientId}) => {
     }
 
     return (
-        <Box sx={{display: "flex", gap: 1}}>
+        <Box sx={{display: "flex", gap: 1, flexDirection: {xs:"column", md:"row"}, justifyContent: "center", alignItems: "center"}}>
             <MediaBox clientId={clientId} changeTime={changeTime} key={"current"} active={currentActive} setItems={setCurrentItems} setActive={setCurrentActive}
                       items={currentItems}></MediaBox>
-            <Grid container spacing={1} height={"min-content"} width={"10%"}>
-                <Grid size={10}>
-                    <Button onClick={() => MoveItems("current", true)}>&lt;&lt;</Button>
+            <Grid container height={"50%"} gap={2} spacing={0} sx={{justifyContent: "center", alignItems: "center"}} width={{xs:"100%",md:"9%",lg:"7%", xl:"5%"}}>
+                <Grid size={{xs:2, md:12}}>
+                    <Button fullWidth onClick={() => MoveItems("current", true)}>{isXs ? "∧∧" : "<<"}</Button>
                 </Grid>
-                <Grid size={12}>
-                    <Button onClick={() => MoveItems("current", false)}>&lt;</Button>
+                <Grid size={{xs:2, md:12}}>
+                    <Button fullWidth onClick={() => MoveItems("current", false)}>{isXs ? "∧" : "<"}</Button>
                 </Grid>
-                <Grid size={12}>
-                    <Button onClick={() => MoveItems("delete", false)}>&gt;</Button>
+                <Grid size={{xs:2, md:12}}>
+                    <Button fullWidth onClick={() => MoveItems("delete", false)}>{isXs ? "∨" : ">"}</Button>
                 </Grid>
-                <Grid size={12}>
-                    <Button onClick={() => MoveItems("delete", true)}>&gt;&gt;</Button>
+                <Grid size={{xs:2, md:12}}>
+                    <Button fullWidth onClick={() => MoveItems("delete", true)}>{isXs ? "∨∨" : ">>"}</Button>
                 </Grid>
 
             </Grid>
