@@ -17,7 +17,7 @@ interface EditDialogHandler {
 export const ClientCards = (clients: IClient[], editDialogHandler: EditDialogHandler) => {
     // console.log(clients);
     const ListClients = clients.map((client, index) =>
-            <Grid size={{xs: 6, sm: 4, md: 4, lg: 3, xl: 2.2}} key={index}>
+            <Grid size={{xs: 6, sm: 4, md: 6, lg: 3.5, xl: 3.25}} key={index}>
                 <Card
                     variant="outlined"
                     sx={{backgroundColor: 'background.cards'}}

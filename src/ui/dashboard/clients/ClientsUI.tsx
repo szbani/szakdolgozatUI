@@ -35,8 +35,8 @@ const ClientsUI = () => {
                 <Grid
                     container
                     spacing={{xs: 2, md: 3}}
+                    columns={{xs: 4, sm: 8, md: 12, lg: 10.5, xl:13}}
                     marginY={{xs: 0.75, sm: 1.5}}
-                    direction="row"
                     sx={{flexGrow: 1}}
                 >
                     {registeredDisplays.length === 0 ?
@@ -53,9 +53,9 @@ const ClientsUI = () => {
                 <Grid
                     container
                     spacing={{xs: 2, md: 3}}
-                    columns={{xs: 4, sm: 8, md: 12}}
+                    columns={{xs: 4, sm: 8, md: 12, lg: 10.5, xl:13}}
+                    marginY={{xs: 0.75, sm: 1.5}}
                     sx={{flexGrow: 1}}
-                    marginTop={{xs: 0.75, sm: 1.5}}
                 >
                     {unRegisteredDisplays.length === 0 ?
                         <Typography fontSize={16}>No Displays

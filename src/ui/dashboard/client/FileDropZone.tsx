@@ -14,7 +14,7 @@ const thumbsContainer = {
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    height: 350,
+    // height: 350,
     overflow: 'auto',
     width: '100%'
 };
@@ -264,7 +264,7 @@ export const FileDropZone = (props) => {
     ]);
 
     return (
-        <Box>
+        <Box height={{xs: "50vh",md:"35vh",lg:"45vh"}}>
             <section className="container">
                 <Grid container spacing={2}>
                     <Grid size={{xs: 12, md: 2.5, lg: 4.5, xl:6}} sx={{

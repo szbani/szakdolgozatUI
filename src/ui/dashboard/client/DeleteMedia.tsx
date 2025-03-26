@@ -76,7 +76,7 @@ const MediaBox = ({clientId, active, changeTime, setActive, items, setItems, del
     }
 
     return (
-        <Card sx={{width:{xs:"100%",md:"50%"},height: {xs:"35vh",md:"60vh"}}}>
+        <Card sx={{width:{xs:"100%",md:"50%"},height: {xs:"30vh",md:"55vh"}}}>
             <CardHeader title={del == 0 ? "Files To Remain" : DeleteTitle()} sx={{height: "15%"}}></CardHeader>
             <CardContent sx={{p:0,m:2,height:"80%", overflow:"scroll"}}>
                 <Grid container spacing={1} overflow={"scroll"}>

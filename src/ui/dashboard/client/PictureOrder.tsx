@@ -124,7 +124,7 @@ const PictureOrder = (props: slideShowProps) => {
             <CardHeader title={cardTitle()}/>
             <CardContent sx={{
                 display: "flex",
-                height: {xs: "60vh", md: "auto"},
+                height: {xs: "45vh", md: "auto"},
                 overflow: "auto",
                 flexDirection: "row",
                 flexWrap: {xs: "wrap", md: "nowrap"}

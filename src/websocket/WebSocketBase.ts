@@ -20,7 +20,6 @@ export const Websocket = (socketUrl: string) => {
     const loggedIn = sessionStorage.getItem('loggedIn');
 
     const [admins, setAdmins] = useState<string[]>([]);
-    const [playlists, setPlaylists] = useState<string[]>([]);
 
     const [newConfig, setNewConfig] = useState<boolean>(false);
     const [accountInformation, setAccountInformation] = useState<AccountInformation>('');
@@ -150,17 +149,6 @@ export const Websocket = (socketUrl: string) => {
                 case "AdminList":
                     setAdmins(parsedMessage.content);
                     break;
-                case "Playlists":
-                    setPlaylists(JSON.parse(parsedMessage.content));
-                    console.log('Playlists:', parsedMessage.content);
-                    break;
-                case "PlaylistUpdate":
-                    setPlaylists((prevPlaylists) => {
-                        prevPlaylists.map((playlist) => {
-                            playlist.id === parsedMessage.content.id ? parsedMessage.content : playlist;
-                        })
-                    })
-                    break;
                 case"Logout":
                     sessionStorage.removeItem('loggedIn');
                     navigate('/signin');
@@ -198,6 +186,5 @@ export const Websocket = (socketUrl: string) => {
         newConfig,
         getAdminList,
         admins,
-        playlists,
     }
 }
